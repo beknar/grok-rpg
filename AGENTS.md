@@ -12,6 +12,8 @@ All in-game pixel art is normalized to a **128×128** cell (nearest-neighbor onl
 
 Do **not** generate original character, monster, tile, VFX, or UI art while the Complete RPG Creator Bundle is available. Pick, slice, and scale from that bundle.
 
+**Where assets came from:** [CREDITS.md](CREDITS.md). Update that file when you add or drop a bake source.
+
 ## Current status
 
 v1–v3 in [PLAN.md](PLAN.md): ARPG loop, three acts, and **scene/boss music** (CC0 + Sound Guild beds). Bake assets (fetches music), then `PYTHONPATH=src python3 -m grok_rpg`. **M** mutes BGM.

@@ -1,6 +1,6 @@
 # Grok RPG — Implementation Plan
 
-Source of truth for *what* the game is: [AGENTS.md](AGENTS.md) and [README.md](README.md). This file is *how* we build it, in order, without leaving the Diablo loop (kill → loot → sell → craft).
+Source of truth for *what* the game is: [AGENTS.md](AGENTS.md) and [README.md](README.md). Asset provenance: [CREDITS.md](CREDITS.md). This file is *how* we build it, in order, without leaving the Diablo loop (kill → loot → sell → craft).
 
 **Progress:** v1–v3 are in the tree, including scene and boss music. Later: ITS identity sheets, remaining fodder, balance.
 

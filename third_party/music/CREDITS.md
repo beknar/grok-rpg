@@ -1,5 +1,7 @@
 # Music credits
 
+Game-wide asset provenance (art, SFX, tiles, UI): **[../../CREDITS.md](../../CREDITS.md)**.
+
 Scene BGM is CC0 (public domain) from [OpenGameArt.org](https://opengameart.org/). No attribution is required; listed so we remember the source.
 
 | File | Use | Author | Page |

@@ -2,7 +2,7 @@
 
 A **128×128 pixel-art Diablo-style ARPG**: slay monsters, pick up loot, sell it, and craft equipment. Three classes — **fighter**, **mage**, **cleric**.
 
-This repository is the game project. Art and audio come from the **Complete RPG Creator Bundle** on disk. They are not stored in git.
+This repository is the game project. Pixel art and most audio come from the **Complete RPG Creator Bundle** on disk (not in git). Scene music is CC0 from OpenGameArt. **Full provenance: [CREDITS.md](CREDITS.md).**
 
 **Status:** v1 loop, v2 acts, v3 music. Read [PLAN.md](PLAN.md), then [AGENTS.md](AGENTS.md).
 
@@ -52,7 +52,7 @@ set GROK_RPG_ASSETS=I:\game assets\complete rpg creator bundle
 
 Default lookup is `I:\game assets\complete rpg creator bundle` / `/mnt/i/game assets/complete rpg creator bundle`.
 
-The baker (to be added) will copy **only** the frames listed in a manifest into `assets/baked/`. Do not commit the raw 80-pack bundle.
+The baker copies **only** the frames listed in `src/grok_rpg/manifest.py` into `assets/baked/`. Do not commit the raw 80-pack bundle. Who made each used pack: **[CREDITS.md](CREDITS.md)**.
 
 ### Packs this game is built from
 
@@ -146,5 +146,5 @@ Read **[AGENTS.md](AGENTS.md)** before writing code. It is the source of truth f
 
 Code in this repo: to be decided by the owner.
 
-Third-party art and audio remain under their original marketplace licenses. You must own the Complete RPG Creator Bundle to bake and run the game with those assets.
+Third-party art and audio remain under their original marketplace or CC0 licenses. See **[CREDITS.md](CREDITS.md)**. You must own the Complete RPG Creator Bundle to bake the commercial packs.
 ```
