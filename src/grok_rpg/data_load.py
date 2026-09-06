@@ -27,7 +27,7 @@ def catalog() -> dict[str, Any]:
     }
 
 
-def validate_catalog(data: dict[str, Any] | None = None) -> list[str]:
+def validate_catalog(data: dict[str, Any] | None = None, *, check_manifest: bool = True) -> list[str]:
     data = data or catalog()
     errors: list[str] = []
     abilities = data["abilities"]
@@ -50,4 +50,15 @@ def validate_catalog(data: dict[str, Any] | None = None) -> list[str]:
         for iid in rec["inputs"]:
             if iid not in items:
                 errors.append(f"recipe {rid} input {iid} missing")
+    if check_manifest:
+        from grok_rpg.manifest import default_jobs
+
+        job_ids = {j["id"] for j in default_jobs()}
+        for aid, ab in abilities.items():
+            vfx = ab.get("vfx")
+            if vfx and vfx not in job_ids:
+                errors.append(f"ability {aid} vfx {vfx} not in manifest")
+            icon = ab.get("icon")
+            if icon and icon not in job_ids:
+                errors.append(f"ability {aid} icon {icon} not in manifest")
     return errors

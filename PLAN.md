@@ -2,7 +2,7 @@
 
 Source of truth for *what* the game is: [AGENTS.md](AGENTS.md) and [README.md](README.md). This file is *how* we build it, in order, without leaving the Diablo loop (kill → loot → sell → craft).
 
-**Progress:** Phases 0–5 landed on `main` (baker, engine, three classes, named monsters, town vendor/craft, HUD/audio). Phase 6 (save/load, juice) is next.
+**Progress:** Phases 0–7 are in the tree: baker, playable loop, save/load, unit + headless integration tests. Remaining polish: ITS identity sheets, more fodder, balance.
 
 ## Goal (v1 playable)
 
@@ -196,24 +196,61 @@ Write `PLAN.md`, push.
 
 ### Phase 6 — Save, feel, polish
 
-- Save/load JSON in `saves/` (gitignored)
-- Damage numbers, loot labels
-- Death/respawn
-- README screenshots optional
-- Balance pass
+- Save/load JSON in `saves/` (gitignored). Slot `saves/slot1.json`. F5 save, F9 load, auto-save when entering town.
+- Persist: class, inventory, equipped, gold, HP/resource, map kind, position, `world_seed`.
+- Seeded maps: town = `Random(world_seed)`, crypt = `Random(world_seed + 1)`. Same seed ⇒ same layout.
+- Damage numbers (floaters) on hit/heal; loot name labels on ground drops.
+- Death: keep gold/loot/gear, respawn in town, HP full, increment `deaths`.
+- Headless `Game(headless=True)` for integration tests (`SDL_VIDEODRIVER=dummy`).
+- `cast_at(ability_id, x, y)` so combat can be driven without a mouse.
+
+**Done when:** F5/F9 round-trips a fighter with crafted gear, death keeps inventory, pytest unit+integration pass without the art bundle.
+
+### Phase 7 — Test matrix (unit + integration)
+
+Land the lists below. Markers: `@pytest.mark.unit` and `@pytest.mark.integration`.
+
+```bash
+PYTHONPATH=src python3 -m pytest -q -m unit
+PYTHONPATH=src python3 -m pytest -q -m integration
+PYTHONPATH=src python3 -m pytest -q
+```
+
+**Done when:** CI-style `pytest -q` is green with no `GROK_RPG_ASSETS` and no real display.
 
 ## Test strategy
 
-CI-friendly tests **must not** require the asset bundle or a display:
+Two layers. **Neither requires the Complete RPG Creator Bundle or a real window.** Integration tests may use pygame with `SDL_VIDEODRIVER=dummy` / `SDL_AUDIODRIVER=dummy` (set in `tests/conftest.py` before importing game code).
 
-- Baker unit tests with tiny synthetic PNGs in `tests/fixtures/`
-- Data JSON schema: every ability id referenced by a class exists; every vfx id exists in manifest
-- Inventory add/remove, recipe consume, loot table with seeded RNG
-- Combat: slash hits AABB, fireball travels and explodes
+Baked art is optional: placeholders (colored rects) are valid. If `assets/baked/index.json` exists locally, integration may load it but must not fail when it is missing.
 
-Manual (this machine): bake + play the loop.
+### Unit tests (fast, no pygame display)
 
-Headless pygame: `SDL_VIDEODRIVER=dummy` if a smoke test opens a surface.
+| Area | File | Must cover |
+| --- | --- | --- |
+| Baker | `tests/test_baker.py` | 16→128, 64→128, 128 copy unchanged, vertical strip frame count, missing source raises |
+| Data | `tests/test_data.py` | class→ability ids exist; loot tables→items; recipes→items; every ability `vfx` id is in `default_jobs()` |
+| Combat | `tests/test_combat.py` | slash AABB hit + `vfx.slash`; fireball spawns projectile `vfx.fireball`; heal `vfx.holy_bless`; smite undead multiplier; ward absorbs; cooldowns; insufficient resource does not fire |
+| Economy | `tests/test_economy.py` | craft consume; vendor 50% on equipment; class equip gate; seeded loot tables |
+| World | `tests/test_world.py` | same seed ⇒ identical town/dungeon tiles + spawns; wall `clamp_move` does not walk through solids; portal/NPC markers present |
+| Save | `tests/test_save.py` | dump/load dict round-trip; missing file raises; version field |
+
+### Integration tests (headless pygame)
+
+File: `tests/test_integration_loop.py`. Drive `Game(headless=True)` with `dt` ticks, no event pump required.
+
+| Scenario | Assert |
+| --- | --- |
+| Boot | title mode; `start_class("fighter")` lands in town with HP and starter items |
+| Loot magnet | spawn `GroundLoot` on the player; after simulate, stack count increases |
+| Kill → drop | set a ghost to 0 HP; `on_kill` path runs; gold or ground loot appears |
+| Vendor | add a material, `inv.sell`; gold up, stack down |
+| Craft + equip | give recipe inputs, `inv.craft` bone_sword, `try_equip` on fighter |
+| Death | set HP 0, simulate; map is town, HP full, inventory kept |
+| Save/load | mutate gold, `save_to`, new `Game`, `load_from`; gold/class/seed match |
+| Mage/cleric boot | `start_class` for each remaining class without exception |
+
+Manual (this machine, not CI): bake + play the loop, F5/F9, die in the crypt, confirm town respawn.
 
 ## Risks
 
@@ -265,7 +302,13 @@ Single-repo sequential stack (each PR assumes the previous is merged). Fine to l
 
 ### PR 6: Save/load and combat juice
 
-- **Description:** JSON saves, damage pops, death/respawn, seeded map regen, balance.
-- **Files/components affected:** `src/grok_rpg/save.py`, `src/grok_rpg/ui.py`, `src/grok_rpg/world.py`, `.gitignore`
+- **Description:** JSON saves, damage pops, loot labels, death/respawn, seeded map regen, headless Game, F5/F9.
+- **Files/components affected:** `src/grok_rpg/save.py`, `src/grok_rpg/game.py`, `src/grok_rpg/world.py`, `src/grok_rpg/ui.py`, `.gitignore`
 - **Dependencies:** PR 5
+
+### PR 7: Unit and integration tests
+
+- **Description:** Expand unit coverage (world seed, save, combat edge cases, vfx ids in manifest). Add headless integration loop tests. pytest markers `unit` and `integration`. conftest sets dummy SDL.
+- **Files/components affected:** `tests/conftest.py`, `tests/test_world.py`, `tests/test_save.py`, `tests/test_combat.py`, `tests/test_data.py`, `tests/test_integration_loop.py`, `pyproject.toml`, `README.md`, `PLAN.md`
+- **Dependencies:** PR 6
 ```

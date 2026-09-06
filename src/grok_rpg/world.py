@@ -27,6 +27,7 @@ class World:
     portals: list[dict] = field(default_factory=list)
     player_start: tuple[float, float] = (TILE * 3, TILE * 3)
     kind: str = "dungeon"
+    seed: int = 0
 
     def in_bounds(self, tx: int, ty: int) -> bool:
         return 0 <= tx < self.width and 0 <= ty < self.height
@@ -53,7 +54,7 @@ def _fill(w: int, h: int, tile: int, blocked: bool) -> tuple[list[list[int]], li
     return tiles, block
 
 
-def make_town(rng: random.Random) -> World:
+def make_town(rng: random.Random, seed: int = 0) -> World:
     w, h = 24, 16
     tiles, block = _fill(w, h, GRASS, False)
     for y in range(h):
@@ -72,7 +73,7 @@ def make_town(rng: random.Random) -> World:
     for x in range(3, w - 3):
         tiles[h // 2][x] = PATH
         block[h // 2][x] = False
-    world = World(w, h, tiles, block, kind="town")
+    world = World(w, h, tiles, block, kind="town", seed=seed)
     world.player_start = ((w // 2) * TILE + 64, (h - 4) * TILE)
     world.npcs = [
         {"id": "vendor", "sprite": "npc.vendor", "name": "Butcher", "x": 6 * TILE, "y": 6 * TILE, "role": "vendor"},
@@ -84,7 +85,7 @@ def make_town(rng: random.Random) -> World:
     return world
 
 
-def make_dungeon(rng: random.Random) -> World:
+def make_dungeon(rng: random.Random, seed: int = 0) -> World:
     w, h = 40, 30
     tiles, block = _fill(w, h, WALL_SOLID, True)
     rooms: list[tuple[int, int, int, int]] = []
@@ -109,7 +110,7 @@ def make_dungeon(rng: random.Random) -> World:
             tiles[cy][cx] = FLOOR_DARK
             block[cy][cx] = False
             cy += 1 if y1 > cy else -1
-    world = World(w, h, tiles, block, kind="dungeon")
+    world = World(w, h, tiles, block, kind="dungeon", seed=seed)
     sx, sy = centers[0]
     world.player_start = (sx * TILE + 64, sy * TILE + 64)
     world.portals = [{"to": "town", "x": sx * TILE + 64, "y": sy * TILE + 64, "label": "Town"}]

@@ -14,9 +14,9 @@ Do **not** generate original character, monster, tile, VFX, or UI art while the 
 
 ## Current status
 
-Playable v1 is in the tree (Phases 1–5 of [PLAN.md](PLAN.md)). Bake assets, then `PYTHONPATH=src python3 -m grok_rpg`. This host has `python3` only (no `python` shim).
+Playable through Phase 6 of [PLAN.md](PLAN.md): baker, three classes, town/crypt, vendor/craft, save/load, death, damage pops. Bake assets, then `PYTHONPATH=src python3 -m grok_rpg`. This host has `python3` only (no `python` shim).
 
-Still open: save/load, ITS identity sheets, remaining fodder/elites, balance (Phase 6).
+`PYTHONPATH=src python3 -m pytest -q` is the gate. Still open: ITS identity sheets, remaining fodder/elites, deeper balance.
 
 ## Stack (already on this machine)
 

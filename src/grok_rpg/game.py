@@ -14,6 +14,7 @@ from grok_rpg.constants import FPS, HITBOX, LOOT_MAGNET, TILE, VIEW_H, VIEW_W
 from grok_rpg.data_load import catalog, validate_catalog
 from grok_rpg.inventory import Inventory
 from grok_rpg.loot import roll_table
+from grok_rpg.save import player_state, read_save, slot_path, write_save
 from grok_rpg.sprites import Animator, SpriteBank
 from grok_rpg.ui import hud, panel_craft, panel_inventory, panel_vendor
 from grok_rpg.world import World, make_dungeon, make_town
@@ -79,6 +80,15 @@ class GroundLoot:
     y: float
 
 
+@dataclass
+class Floater:
+    text: str
+    x: float
+    y: float
+    life: float = 0.9
+    color: tuple[int, int, int] = (255, 220, 120)
+
+
 class Actor:
     def __init__(self, x: float, y: float) -> None:
         self.x = x
@@ -126,6 +136,13 @@ class Player(Actor):
         self._vendor_hit: list = []
         self._craft_hit: list = []
 
+    def refresh_stats(self, data: dict[str, Any]) -> None:
+        spec = data["classes"][self.class_id]
+        self.hp_max = float(spec["hp"]) + self.inv.stat_bonus(data["items"], "hp")
+        self.power = float(spec["power"]) + self.inv.stat_bonus(data["items"], "power")
+        self.armor = float(spec["armor"]) + self.inv.stat_bonus(data["items"], "armor")
+        self.hp = min(self.hp, self.hp_max)
+
 
 class Monster(Actor):
     def __init__(self, spec_id: str, x: float, y: float, spec: dict[str, Any]) -> None:
@@ -148,16 +165,20 @@ class Monster(Actor):
 
 
 class Game:
-    def __init__(self) -> None:
+    def __init__(self, *, headless: bool = False, world_seed: int = 1337) -> None:
+        self.headless = headless
+        if headless:
+            os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
+            os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
         pygame.init()
         pygame.display.set_caption("Grok RPG")
-        info = pygame.display.Info()
         scale = 1
-        if info.current_w >= VIEW_W * 2 and info.current_h >= VIEW_H * 2:
-            scale = 2
+        if not headless:
+            info = pygame.display.Info()
+            if info.current_w >= VIEW_W * 2 and info.current_h >= VIEW_H * 2:
+                scale = 2
         self.scale = scale
-        flags = 0
-        self.window = pygame.display.set_mode((VIEW_W * scale, VIEW_H * scale), flags)
+        self.window = pygame.display.set_mode((VIEW_W * scale, VIEW_H * scale))
         self.logical = pygame.Surface((VIEW_W, VIEW_H))
         self.clock = pygame.time.Clock()
         self.font = pygame.font.Font(None, 22)
@@ -168,7 +189,8 @@ class Game:
             print("data errors:", *errs, sep="\n  ")
         self.bank = SpriteBank()
         self.audio = Audio()
-        self.rng = random.Random(1337)
+        self.world_seed = int(world_seed)
+        self.rng = random.Random(self.world_seed + 7)
         self.mode = "title"
         self.ui = "none"
         self.debug = False
@@ -179,9 +201,12 @@ class Game:
         self.aoes: list[Aoe] = []
         self.loot: list[GroundLoot] = []
         self.vfx: list[Vfx] = []
+        self.floaters: list[Floater] = []
         self.cam_x = 0.0
         self.cam_y = 0.0
         self.time = 0.0
+        self.dt = 0.0
+        self.deaths = 0
         self.message = ""
         self.message_t = 0.0
         self.tile_frames: list[pygame.Surface] = []
@@ -203,10 +228,15 @@ class Game:
         self.ui = "none"
         self.say(f"{self.data['classes'][class_id]['name']} enters the valley.")
 
-    def enter_map(self, kind: str) -> None:
+    def enter_map(self, kind: str, *, keep_position: bool = False) -> None:
         assert self.player
-        self.world = make_town(self.rng) if kind == "town" else make_dungeon(self.rng)
-        self.player.x, self.player.y = self.world.player_start
+        seed = self.world_seed if kind == "town" else self.world_seed + 1
+        gen = random.Random(seed)
+        self.world = make_town(gen, seed=seed) if kind == "town" else make_dungeon(gen, seed=seed)
+        if not keep_position:
+            self.player.x, self.player.y = self.world.player_start
+        elif not self.world.walkable_px(self.player.x, self.player.y, self.player.radius):
+            self.player.x, self.player.y = self.world.player_start
         self.monsters = [Monster(sid, x, y, self.data["monsters"][sid]) for sid, x, y in self.world.spawns]
         self.projectiles.clear()
         self.aoes.clear()
@@ -215,6 +245,82 @@ class Game:
         self.tile_frames = self.bank.frames("tile.palette")
         self.audio.ambience("amb.town" if kind == "town" else "amb.dungeon")
         self.ui = "none"
+        if kind == "town" and not self.headless:
+            self.save_to(slot_path(), quiet=True)
+
+    def pop(self, x: float, y: float, text: str, color: tuple[int, int, int] = (255, 220, 120)) -> None:
+        self.floaters.append(Floater(text=text, x=x, y=y, color=color))
+
+    def deal(self, target: Any, amount: float) -> float:
+        dealt = apply_damage(target, amount)
+        if dealt > 0:
+            self.pop(target.x, target.y, str(int(round(dealt))), (255, 80, 80))
+        return dealt
+
+    def cast_at(self, ability_id: str, aim_x: float, aim_y: float) -> None:
+        p = self.player
+        if not p or p.hp <= 0:
+            return
+        ability = self.data["abilities"][ability_id]
+        enemies = [m for m in self.monsters if m.hp > 0]
+        events = try_cast(
+            caster=p,
+            ability_id=ability_id,
+            ability=ability,
+            now=self.time,
+            aim_x=aim_x,
+            aim_y=aim_y,
+            targets=enemies,
+            spawn=self.spawn,
+        )
+        for ev in events:
+            if ev.sfx:
+                self.audio.play(ev.sfx)
+            if ev.vfx:
+                self.vfx.append(Vfx(ev.vfx, ev.x, ev.y))
+            if ev.kind == "hit" and ev.damage:
+                self.pop(ev.x, ev.y, str(int(round(ev.damage))), (255, 80, 80))
+            if ev.kind == "heal" and ev.heal:
+                self.pop(ev.x, ev.y, f"+{int(round(ev.heal))}", (80, 220, 120))
+        p.facing = facing_from(aim_x - p.x, aim_y - p.y)
+
+    def save_to(self, path=None, *, quiet: bool = False) -> None:
+        if not self.player or not self.world:
+            return
+        path = path or slot_path()
+        write_save(
+            path,
+            player_state(
+                self.player,
+                world_kind=self.world.kind,
+                world_seed=self.world_seed,
+                time=self.time,
+                deaths=self.deaths,
+            ),
+        )
+        if not quiet:
+            self.say("Game saved.")
+
+    def load_from(self, path=None) -> None:
+        path = path or slot_path()
+        data = read_save(path)
+        self.world_seed = int(data["world_seed"])
+        self.rng = random.Random(self.world_seed + 7)
+        self.time = float(data.get("time", 0))
+        self.deaths = int(data.get("deaths", 0))
+        self.player = Player(data["class_id"], self.data)
+        pdata = data["player"]
+        self.player.inv = Inventory.from_dict(pdata["inventory"])
+        self.player.refresh_stats(self.data)
+        self.player.hp = min(float(pdata["hp"]), self.player.hp_max)
+        self.player.resource = float(pdata["resource"])
+        self.enter_map(data["world_kind"], keep_position=True)
+        self.player.x = float(pdata["x"])
+        self.player.y = float(pdata["y"])
+        if self.world and not self.world.walkable_px(self.player.x, self.player.y, self.player.radius):
+            self.player.x, self.player.y = self.world.player_start
+        self.mode = "play"
+        self.say("Game loaded.")
 
     def spawn(self, kind: str, payload: dict[str, Any]) -> None:
         if kind == "projectile":
@@ -231,32 +337,15 @@ class Game:
                 caster.x, caster.y = self.world.clamp_move(caster.x - dx, caster.y - dy, caster.x, caster.y, caster.radius)
             for m in self.monsters:
                 if m.hp > 0 and dist(caster.x, caster.y, m.x, m.y) < 90:
-                    apply_damage(m, float(payload["damage"]) * undead_mult(payload["ability"], m.tags))
+                    self.deal(m, float(payload["damage"]) * undead_mult(payload["ability"], m.tags))
                     self.vfx.append(Vfx(payload.get("vfx") or "vfx.explosion", m.x, m.y))
 
     def cast(self, ability_id: str) -> None:
         p = self.player
         if not p or p.hp <= 0:
             return
-        ability = self.data["abilities"][ability_id]
         mx, my = self.world_mouse()
-        enemies = [m for m in self.monsters if m.hp > 0]
-        events = try_cast(
-            caster=p,
-            ability_id=ability_id,
-            ability=ability,
-            now=self.time,
-            aim_x=mx,
-            aim_y=my,
-            targets=enemies,
-            spawn=self.spawn,
-        )
-        for ev in events:
-            if ev.sfx:
-                self.audio.play(ev.sfx)
-            if ev.vfx:
-                self.vfx.append(Vfx(ev.vfx, ev.x, ev.y))
-            p.facing = facing_from(mx - p.x, my - p.y)
+        self.cast_at(ability_id, mx, my)
 
     def use_item(self, item_id: str) -> None:
         p = self.player
@@ -275,10 +364,7 @@ class Game:
             err = p.inv.try_equip(item_id, p.class_id, self.data["items"])
             self.say(err or f"Equipped {spec['name']}")
             self.audio.play("sfx.bag")
-            p.hp_max = self.data["classes"][p.class_id]["hp"] + p.inv.stat_bonus(self.data["items"], "hp")
-            p.power = self.data["classes"][p.class_id]["power"] + p.inv.stat_bonus(self.data["items"], "power")
-            p.armor = self.data["classes"][p.class_id]["armor"] + p.inv.stat_bonus(self.data["items"], "armor")
-            p.hp = min(p.hp, p.hp_max)
+            p.refresh_stats(self.data)
 
     def handle_play(self, events: list[pygame.event.Event]) -> None:
         p = self.player
@@ -297,6 +383,13 @@ class Game:
                     self.ui = "none" if self.ui == "craft" else "craft"
                 elif ev.key == pygame.K_F3:
                     self.debug = not self.debug
+                elif ev.key == pygame.K_F5:
+                    self.save_to()
+                elif ev.key == pygame.K_F9:
+                    try:
+                        self.load_from()
+                    except FileNotFoundError:
+                        self.say("No save yet.")
                 elif ev.key == pygame.K_e:
                     self.try_interact()
                 elif ev.key == pygame.K_h:
@@ -445,7 +538,7 @@ class Game:
                     if m.vfx:
                         self.vfx.append(Vfx(m.vfx, m.x, m.y))
                 elif aabb_hit(m.x, m.y, m.radius + 8, p.x, p.y, p.radius):
-                    dealt = apply_damage(p, max(1.0, m.damage - p.armor * 0.3))
+                    dealt = self.deal(p, max(1.0, m.damage - p.armor * 0.3))
                     self.audio.play("sfx.sword_hit", 0.35)
                     if dealt and m.vfx:
                         self.vfx.append(Vfx(m.vfx, p.x, p.y))
@@ -461,13 +554,13 @@ class Game:
             victims = [p] if proj.caster is not p else [m for m in self.monsters if m.hp > 0]
             for vic in victims:
                 if aabb_hit(proj.x, proj.y, 16, vic.x, vic.y, vic.radius):
-                    apply_damage(vic, proj.damage * undead_mult(proj.ability, getattr(vic, "tags", [])))
+                    self.deal(vic, proj.damage * undead_mult(proj.ability, getattr(vic, "tags", [])))
                     if proj.impact_vfx:
                         self.vfx.append(Vfx(proj.impact_vfx, vic.x, vic.y))
                     if proj.aoe and proj.caster is p:
                         for m in self.monsters:
                             if m.hp > 0 and dist(proj.x, proj.y, m.x, m.y) < proj.aoe:
-                                apply_damage(m, proj.damage * 0.6 * undead_mult(proj.ability, m.tags))
+                                self.deal(m, proj.damage * 0.6 * undead_mult(proj.ability, m.tags))
                     proj.dead = True
                     break
         self.projectiles = [pr for pr in self.projectiles if not pr.dead]
@@ -479,7 +572,7 @@ class Game:
                 aoe.ticks -= 1
                 for m in self.monsters:
                     if m.hp > 0 and dist(aoe.x, aoe.y, m.x, m.y) <= aoe.radius:
-                        apply_damage(m, aoe.damage * undead_mult(aoe.ability, m.tags))
+                        self.deal(m, aoe.damage * undead_mult(aoe.ability, m.tags))
                 if aoe.vfx:
                     self.vfx.append(Vfx(aoe.vfx, aoe.x, aoe.y))
             if aoe.ticks <= 0:
@@ -500,11 +593,24 @@ class Game:
                 alive_vfx.append(v)
         self.vfx = alive_vfx
 
+        alive_float = []
+        for fl in self.floaters:
+            fl.life -= self.dt
+            fl.y -= 28 * self.dt
+            if fl.life > 0:
+                alive_float.append(fl)
+        self.floaters = alive_float
+
         if p.hp <= 0:
+            self.deaths += 1
+            kept = p.inv.to_dict()
             self.say("You fall. The innkeep drags you back to town.")
             p.hp = p.hp_max
             if p.resource_name == "mana":
                 p.resource = p.resource_max * 0.5
+            p.inv = Inventory.from_dict(kept)
+            p.refresh_stats(self.data)
+            p.hp = p.hp_max
             self.enter_map("town")
 
         # auto portal proximity hint is enough; E to use
@@ -524,6 +630,7 @@ class Game:
         gold = self.rng.randint(int(m.gold_range[0]), int(m.gold_range[1]))
         if gold:
             self.player.inv.add("gold", gold)  # type: ignore[union-attr]
+            self.pop(m.x, m.y - 20, f"+{gold}g", (240, 210, 80))
         self.audio.play("sfx.monster", 0.5)
         dead_id = f"mon.{m.spec_id}.dead"
         if dead_id in self.bank.index:
@@ -597,6 +704,9 @@ class Game:
                 self.logical.blit(small, (drop.x - self.cam_x - 24, drop.y - self.cam_y - 24))
             else:
                 pygame.draw.circle(self.logical, (240, 200, 80), (int(drop.x - self.cam_x), int(drop.y - self.cam_y)), 8)
+            name = self.data["items"][drop.item_id]["name"]
+            label = self.font.render(f"{name} x{drop.qty}", True, (255, 230, 160))
+            self.logical.blit(label, (drop.x - self.cam_x - label.get_width() / 2, drop.y - self.cam_y + 20))
 
         moving_p = pygame.key.get_pressed()[pygame.K_w] or pygame.key.get_pressed()[pygame.K_a] or pygame.key.get_pressed()[pygame.K_s] or pygame.key.get_pressed()[pygame.K_d] or pygame.mouse.get_pressed()[0]
         sid = self.sprite_for(p, bool(moving_p) and self.ui == "none")
@@ -627,11 +737,15 @@ class Game:
             if fr:
                 self.logical.blit(fr, (int(v.x - self.cam_x - TILE / 2), int(v.y - self.cam_y - TILE / 2)))
 
+        for fl in self.floaters:
+            img = self.font.render(fl.text, True, fl.color)
+            self.logical.blit(img, (fl.x - self.cam_x - img.get_width() / 2, fl.y - self.cam_y - 40))
+
         if self.debug:
             pygame.draw.rect(self.logical, (0, 255, 0), (p.x - self.cam_x - p.radius, p.y - self.cam_y - p.radius, p.radius * 2, p.radius * 2), 1)
 
         hud(self.logical, p, self.data["abilities"], self.bank, self.font)
-        hint = "WASD move  LMB attack  1-4 skills  E interact  I inventory  C craft  H potion  Esc menu"
+        hint = "WASD move  LMB attack  1-4 skills  E interact  I inv  C craft  H potion  F5 save  F9 load  Esc"
         self.logical.blit(self.font.render(hint, True, (200, 190, 160)), (16, VIEW_H - 22))
         if self.message_t > 0:
             self.logical.blit(self.big.render(self.message, True, (255, 230, 160)), (80, 120))

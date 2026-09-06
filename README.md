@@ -125,11 +125,15 @@ python3 tools/bake_assets.py
 python3 -m grok_rpg
 ```
 
-Tests (no bundle, no window):
+Tests (no bundle, no window). This host has `python3` only:
 
 ```bash
 PYTHONPATH=src python3 -m pytest -q
+PYTHONPATH=src python3 -m pytest -q -m unit
+PYTHONPATH=src python3 -m pytest -q -m integration
 ```
+
+In-game: **F5** save, **F9** load (`saves/slot1.json`). Death returns you to town with loot kept.
 
 ## For implementers
 
