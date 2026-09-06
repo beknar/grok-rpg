@@ -28,7 +28,7 @@ def test_round_trip(tmp_path: Path) -> None:
     assert loaded["world_seed"] == 1337
     assert loaded["deaths"] == 2
     assert loaded["unlocked_acts"] == ["crypt", "cave"]
-    assert loaded["version"] == 2
+    assert loaded["version"] == 3
     assert loaded["player"]["inventory"]["gold"] == 77
     assert loaded["player"]["inventory"]["stacks"]["monster_bone"] == 3
 
@@ -49,5 +49,6 @@ def test_v1_migrates(tmp_path: Path) -> None:
     path = tmp_path / "old.json"
     write_save(path, {"version": 1, "class_id": "fighter", "player": {"inventory": {"gold": 1, "stacks": {}, "equipped": {}}}})
     loaded = read_save(path)
-    assert loaded["version"] == 2
+    assert loaded["version"] == 3
     assert loaded["unlocked_acts"] == ["crypt"]
+    assert loaded["music_muted"] is False

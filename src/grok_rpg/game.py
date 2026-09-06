@@ -201,7 +201,9 @@ class Game:
         if errs:
             print("data errors:", *errs, sep="\n  ")
         self.bank = SpriteBank()
-        self.audio = Audio()
+        self.audio = Audio(self.data.get("music"))
+        if not headless:
+            self.audio.play_scene("title")
         self.world_seed = int(world_seed)
         self.rng = random.Random(self.world_seed + 7)
         self.mode = "title"
@@ -257,7 +259,6 @@ class Game:
             seed = self.world_seed
             gen = random.Random(seed)
             self.world = make_town(gen, seed=seed, unlocked=self.unlocked_acts)
-            amb = "amb.town"
         else:
             spec = acts[kind]
             offset = {"crypt": 1, "cave": 2, "castle": 3}.get(kind, 1)
@@ -271,7 +272,6 @@ class Game:
                 roster=list(spec["roster"]),
                 boss=spec["boss"],
             )
-            amb = spec.get("ambience") or "amb.dungeon"
         if not keep_position:
             self.player.x, self.player.y = self.world.player_start
         elif not self.world.walkable_px(self.player.x, self.player.y, self.player.radius):
@@ -287,7 +287,7 @@ class Game:
         self.vfx.clear()
         ts = self.world.tileset
         self.tile_frames = self.bank.frames(f"tile.{ts}") or self.bank.frames("tile.palette")
-        self.audio.ambience(amb)
+        self.audio.play_scene(kind)
         self.ui = "none"
         if kind == "town" and not self.headless:
             self.save_to(slot_path(), quiet=True)
@@ -343,6 +343,7 @@ class Game:
                 time=self.time,
                 deaths=self.deaths,
                 unlocked_acts=self.unlocked_acts,
+                music_muted=self.audio.muted,
             ),
         )
         if not quiet:
@@ -356,6 +357,7 @@ class Game:
         self.time = float(data.get("time", 0))
         self.deaths = int(data.get("deaths", 0))
         self.unlocked_acts = list(data.get("unlocked_acts") or ["crypt"])
+        self.audio.set_muted(bool(data.get("music_muted")))
         self.player = Player(data["class_id"], self.data)
         pdata = data["player"]
         self.player.inv = Inventory.from_dict(pdata["inventory"], self.data["items"])
@@ -438,12 +440,16 @@ class Game:
                         self.ui = "none"
                     else:
                         self.mode = "title"
+                        self.audio.play_scene("title")
                 elif keydown_action(ev.key, binds, "inventory"):
                     self.ui = "none" if self.ui == "inventory" else "inventory"
                 elif keydown_action(ev.key, binds, "craft"):
                     self.ui = "none" if self.ui == "craft" else "craft"
                 elif keydown_action(ev.key, binds, "spellbook"):
                     self.ui = "none" if self.ui == "spellbook" else "spellbook"
+                elif keydown_action(ev.key, binds, "mute"):
+                    muted = self.audio.toggle_mute()
+                    self.say("Music off" if muted else "Music on")
                 elif keydown_action(ev.key, binds, "debug"):
                     self.debug = not self.debug
                 elif keydown_action(ev.key, binds, "save"):
@@ -708,6 +714,12 @@ class Game:
         self.cam_x = max(0, min(self.cam_x, max(0, max_x)))
         self.cam_y = max(0, min(self.cam_y, max(0, max_y)))
         self.message_t = max(0.0, self.message_t - self.dt)
+        if w.kind != "town":
+            combat = any(
+                m.elite and m.hp > 0 and dist(m.x, m.y, p.x, p.y) < m.aggro
+                for m in self.monsters
+            )
+            self.audio.play_scene(w.kind, combat=combat)
 
     def on_kill(self, m: Monster) -> None:
         table = self.data["loot_tables"][m.loot_table]
@@ -851,7 +863,7 @@ class Game:
             pygame.draw.rect(self.logical, (0, 255, 0), (p.x - self.cam_x - p.radius, p.y - self.cam_y - p.radius, p.radius * 2, p.radius * 2), 1)
 
         hud(self.logical, p, self.data["abilities"], self.bank, self.font)
-        hint = "WASD move  LMB attack  1-4/QRF skills  E interact  I inv  C craft  B book  H potion  F5/F9"
+        hint = "WASD move  LMB attack  1-4/QRF skills  E interact  I inv  C craft  B book  M mute  F5/F9"
         self.logical.blit(self.font.render(hint, True, (200, 190, 160)), (16, VIEW_H - 22))
         if self.message_t > 0:
             self.logical.blit(self.big.render(self.message, True, (255, 230, 160)), (80, 120))

@@ -85,8 +85,11 @@ def _copy(job_id: str, source: str, *, category: str) -> dict[str, Any]:
     }
 
 
-def _audio(job_id: str, source: str) -> dict[str, Any]:
-    return {"id": job_id, "source": source, "op": "audio_copy", "required": False}
+def _audio(job_id: str, source: str, repo_source: str | None = None) -> dict[str, Any]:
+    job: dict[str, Any] = {"id": job_id, "source": source, "op": "audio_copy", "required": False}
+    if repo_source:
+        job["repo_source"] = repo_source
+    return job
 
 
 def default_jobs() -> list[dict[str, Any]]:
@@ -456,5 +459,13 @@ def default_jobs() -> list[dict[str, Any]]:
         _audio("sfx.monster", f"{MON_SFX}/Aggressive_01.wav"),
         _audio("amb.dungeon", f"{AMB}/Ambience_Dungeon_01_Loop.wav"),
         _audio("amb.town", f"{AMB}/Ambience_Forest_Loop.wav"),
+        _audio("amb.cave", f"{AMB}/Ambience_Deep_Loop.wav"),
+        _audio("amb.castle", f"{AMB}/Ambience_Dungeon_02_Loop.wav"),
+        _audio("music.title", f"{AMB}/Magic_Ethereal_Aura_Loop.wav", "third_party/music/title.ogg"),
+        _audio("music.town", f"{AMB}/Dark_Fantasy_02_Loop.wav", "third_party/music/town.mp3"),
+        _audio("music.crypt", f"{AMB}/Dark_Fantasy_01_Loop.wav", "third_party/music/crypt.mp3"),
+        _audio("music.cave", f"{AMB}/Dark_Fantasy_01_Loop.wav", "third_party/music/cave.mp3"),
+        _audio("music.castle", f"{AMB}/Dark_Fantasy_02_Loop.wav", "third_party/music/castle.mp3"),
+        _audio("music.boss", f"{AMB}/Dark_Fantasy_01_Loop.wav", "third_party/music/boss.mp3"),
     ])
     return jobs

@@ -10,7 +10,7 @@ from typing import Any
 from PIL import Image
 
 from grok_rpg.manifest import default_jobs
-from grok_rpg.paths import BAKED_DIR, DATA_DIR, require_bundle
+from grok_rpg.paths import BAKED_DIR, DATA_DIR, REPO_ROOT, require_bundle
 
 
 CELL = 128
@@ -102,6 +102,15 @@ def resolve_source(bundle: Path, spec: str) -> Path:
     raise FileNotFoundError(f"Source not found: {spec}")
 
 
+def resolve_job_file(job: dict[str, Any], bundle: Path) -> Path:
+    repo_rel = job.get("repo_source")
+    if repo_rel:
+        candidate = REPO_ROOT / repo_rel
+        if candidate.is_file():
+            return candidate
+    return resolve_source(bundle, job["source"])
+
+
 def bake_job(
     job: dict[str, Any],
     *,
@@ -116,8 +125,8 @@ def bake_job(
     scale_to = job.get("scale_to", CELL)
 
     if op == "audio_copy":
-        src = resolve_source(bundle, job["source"])
-        dest = dest_root / "audio" / Path(src.name)
+        src = resolve_job_file(job, bundle)
+        dest = dest_root / "audio" / f"{job_id.replace('.', '_')}{src.suffix.lower()}"
         if dry_run:
             return {"id": job_id, "frames": [str(dest.relative_to(dest_root))], "kind": "audio"}
         dest.parent.mkdir(parents=True, exist_ok=True)
@@ -226,6 +235,13 @@ def main(argv: list[str] | None = None) -> int:
     dest = args.out or BAKED_DIR
     print(f"bundle: {bundle}")
     print(f"out:    {dest}")
+    try:
+        sys.path.insert(0, str(REPO_ROOT / "tools"))
+        from fetch_music import fetch_all
+
+        fetch_all()
+    except Exception as exc:
+        print(f"music fetch skipped: {exc}")
     index = bake_all(bundle=bundle, dest_root=dest, dry_run=args.dry_run)
     print(f"baked {len(index['jobs'])} jobs")
     if index.get("errors"):

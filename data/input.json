@@ -15,5 +15,6 @@
   "debug": ["f3"],
   "save": ["f5"],
   "load": ["f9"],
+  "mute": ["m"],
   "pause": ["escape"]
 }

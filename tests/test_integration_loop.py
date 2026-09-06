@@ -131,6 +131,14 @@ def test_necromancer_summons() -> None:
     assert len(g.monsters) >= before
 
 
+def test_scene_music_ids() -> None:
+    g = Game(headless=True)
+    g.start_class("fighter")
+    assert g.audio.current_music == "music.town"
+    g.enter_map("crypt")
+    assert g.audio.current_music == "music.crypt"
+
+
 def test_letterbox_mapping() -> None:
     g = Game(headless=True)
     g.letter_scale = 2

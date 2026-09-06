@@ -14,7 +14,7 @@ Do **not** generate original character, monster, tile, VFX, or UI art while the 
 
 ## Current status
 
-v1 loop plus **v2** in [PLAN.md](PLAN.md): three acts (crypt/cave/castle), affixes, wired input.json, necromancer summons, letterbox, portraits, spellbook. Bake assets, then `PYTHONPATH=src python3 -m grok_rpg`.
+v1–v3 in [PLAN.md](PLAN.md): ARPG loop, three acts, and **scene/boss music** (CC0 + Sound Guild beds). Bake assets (fetches music), then `PYTHONPATH=src python3 -m grok_rpg`. **M** mutes BGM.
 
 `PYTHONPATH=src python3 -m pytest -q` is the gate. Still later: ITS identity sheets, remaining fodder, deeper balance.
 

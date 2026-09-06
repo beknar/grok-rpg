@@ -18,3 +18,8 @@ def test_skills_include_qrf() -> None:
 def test_keydown_spellbook() -> None:
     binds = catalog()["input"]
     assert keydown_action(pygame.K_b, binds, "spellbook")
+
+
+def test_mute_key() -> None:
+    binds = catalog()["input"]
+    assert pygame.K_m in keys_for(binds, "mute")

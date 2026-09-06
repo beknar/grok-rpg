@@ -15,6 +15,7 @@ _NAME_TO_KEY = {
     "i": pygame.K_i,
     "h": pygame.K_h,
     "b": pygame.K_b,
+    "m": pygame.K_m,
     "tab": pygame.K_TAB,
     "up": pygame.K_UP,
     "down": pygame.K_DOWN,

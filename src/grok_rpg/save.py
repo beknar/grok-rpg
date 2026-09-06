@@ -6,7 +6,7 @@ from typing import Any
 
 from grok_rpg.paths import SAVES_DIR
 
-SAVE_VERSION = 2
+SAVE_VERSION = 3
 
 
 def slot_path(slot: str = "slot1", directory: Path | None = None) -> Path:
@@ -27,14 +27,15 @@ def read_save(path: Path) -> dict[str, Any]:
         raise FileNotFoundError(f"No save at {path}")
     data = json.loads(path.read_text(encoding="utf-8"))
     ver = int(data.get("version", 0))
-    if ver not in (1, 2):
+    if ver not in (1, 2, 3):
         raise ValueError(f"Unsupported save version {data.get('version')}")
     if ver == 1:
-        data["version"] = 2
         data.setdefault("unlocked_acts", ["crypt"])
         inv = data.get("player", {}).get("inventory", {})
         inv.setdefault("gear", [])
+    data["version"] = SAVE_VERSION
     data.setdefault("unlocked_acts", ["crypt"])
+    data.setdefault("music_muted", False)
     return data
 
 
@@ -46,6 +47,7 @@ def player_state(
     time: float,
     deaths: int,
     unlocked_acts: list[str],
+    music_muted: bool = False,
 ) -> dict[str, Any]:
     return {
         "version": SAVE_VERSION,
@@ -55,6 +57,7 @@ def player_state(
         "time": float(time),
         "deaths": int(deaths),
         "unlocked_acts": list(unlocked_acts),
+        "music_muted": bool(music_muted),
         "player": {
             "x": float(player.x),
             "y": float(player.y),

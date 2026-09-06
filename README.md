@@ -4,7 +4,7 @@ A **128×128 pixel-art Diablo-style ARPG**: slay monsters, pick up loot, sell it
 
 This repository is the game project. Art and audio come from the **Complete RPG Creator Bundle** on disk. They are not stored in git.
 
-**Status:** v1 loop + v2 acts/affixes. Read [PLAN.md](PLAN.md), then [AGENTS.md](AGENTS.md).
+**Status:** v1 loop, v2 acts, v3 music. Read [PLAN.md](PLAN.md), then [AGENTS.md](AGENTS.md).
 
 ## What you will play
 
@@ -121,6 +121,7 @@ source .venv/bin/activate   # Windows: .venv\Scripts\activate
 python3 -m pip install -r requirements.txt
 export GROK_RPG_ASSETS="/mnt/i/game assets/complete rpg creator bundle"
 export PYTHONPATH=src
+python3 tools/fetch_music.py   # CC0 BGM; also run by the baker
 python3 tools/bake_assets.py
 python3 -m grok_rpg
 ```
@@ -133,7 +134,9 @@ PYTHONPATH=src python3 -m pytest -q -m unit
 PYTHONPATH=src python3 -m pytest -q -m integration
 ```
 
-In-game: **F5** save, **F9** load (`saves/slot1.json`). Death returns you to town with loot kept. Town has three act portals (Crypt, Cave, Castle); kill the act elite to unseal the next. **B** opens the spellbook. Skills: **1–4** and **Q/R/F**.
+In-game: **F5** save, **F9** load (`saves/slot1.json`). Death returns you to town with loot kept. Town has three act portals (Crypt, Cave, Castle); kill the act elite to unseal the next. **B** opens the spellbook. **M** mutes music. Skills: **1–4** and **Q/R/F**.
+
+Music is CC0 from OpenGameArt (see `third_party/music/CREDITS.md`), with The Sound Guild dark-fantasy loops as bake fallbacks.
 
 ## For implementers
 

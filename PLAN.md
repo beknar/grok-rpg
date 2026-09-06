@@ -2,7 +2,7 @@
 
 Source of truth for *what* the game is: [AGENTS.md](AGENTS.md) and [README.md](README.md). This file is *how* we build it, in order, without leaving the Diablo loop (kill → loot → sell → craft).
 
-**Progress:** v1 (Phases 0–7) and **v2** are in the tree: three acts, affixes, input map, summons, letterbox, portraits, spellbook. Later: ITS identity sheets, remaining fodder.
+**Progress:** v1–v3 are in the tree, including scene and boss music. Later: ITS identity sheets, remaining fodder, balance.
 
 ## Goal (v1 playable)
 
@@ -286,6 +286,27 @@ Save version **2** (v1 files still load). Tests: affix roll seeded, act unlock, 
 - **Description:** Implement the v2 list above with unit + integration coverage.
 - **Files/components affected:** `PLAN.md`, `src/grok_rpg/*`, `data/*`, `tests/*`, `README.md`, `AGENTS.md`
 - **Dependencies:** PR 7
+
+## v3
+
+v2 is the three-act ARPG. v3 is **game music**. The Complete RPG Creator Bundle has ambience and dark-fantasy loops, not a full soundtrack; v3 also pulls **CC0** RPG loops (OpenGameArt) when the network is available.
+
+### v3 features
+
+1. **Scene BGM** — looping music for title, town, crypt, cave, castle.
+2. **Boss BGM** — switch to a battle loop while an elite is in aggro range; restore scene music after.
+3. **Layered ambience** — forest/dungeon/cave beds on a reserved mixer channel so they sit under the music (not instead of it).
+4. **Mute** — `M` toggles music+ambience (SFX stay). Persisted on save.
+5. **Volumes** — `data/music.json` music/ambience/sfx levels.
+6. **Fetch + bake** — `tools/fetch_music.py` downloads CC0 files into `third_party/music/` (gitignored binaries). Baker copies those, with Sound Guild `Dark_Fantasy_*` / `Magic_Ethereal_*` as fallbacks.
+
+Tests: scene→track map, mute, boss switch, baker audio_copy of a tiny wav. Headless Game must not crash when mixer is dummy.
+
+### PR 9: Game music
+
+- **Description:** Implement the v3 music list.
+- **Files/components affected:** `PLAN.md`, `data/music.json`, `data/acts.json`, `data/input.json`, `src/grok_rpg/audio.py`, `src/grok_rpg/game.py`, `src/grok_rpg/manifest.py`, `src/grok_rpg/baker.py`, `tools/fetch_music.py`, `tests/test_music.py`, `README.md`, `AGENTS.md`
+- **Dependencies:** PR 8
 
 ## PR Plan
 

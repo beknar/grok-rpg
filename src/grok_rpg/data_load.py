@@ -26,6 +26,7 @@ def catalog() -> dict[str, Any]:
         "input": load_json("input.json"),
         "affixes": load_json("affixes.json"),
         "acts": load_json("acts.json"),
+        "music": load_json("music.json"),
     }
 
 

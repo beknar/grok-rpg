@@ -6,7 +6,8 @@
     "boss": "necromancer",
     "roster": ["dungeon_minion_01", "dungeon_minion_02", "dungeon_minion_03", "undead_ghost", "beast_beaver"],
     "unlocks": "cave",
-    "ambience": "amb.dungeon"
+    "ambience": "amb.dungeon",
+    "music": "music.crypt"
   },
   "cave": {
     "label": "Muddy Cave",
@@ -14,7 +15,8 @@
     "boss": "cave_king",
     "roster": ["dungeon_minion_04", "dungeon_minion_05", "elemental_salamander", "beast_beaver", "enemy_mage"],
     "unlocks": "castle",
-    "ambience": "amb.dungeon"
+    "ambience": "amb.cave",
+    "music": "music.cave"
   },
   "castle": {
     "label": "Castle Dungeon",
@@ -22,6 +24,7 @@
     "boss": "castle_lich",
     "roster": ["dungeon_minion_06", "dungeon_minion_07", "dungeon_minion_08", "undead_ghost", "enemy_mage", "necromancer"],
     "unlocks": null,
-    "ambience": "amb.dungeon"
+    "ambience": "amb.castle",
+    "music": "music.castle"
   }
 }

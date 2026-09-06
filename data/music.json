@@ -1,0 +1,13 @@
+{
+  "music_volume": 0.42,
+  "ambience_volume": 0.2,
+  "sfx_volume": 0.6,
+  "scenes": {
+    "title": {"music": "music.title", "ambience": null},
+    "town": {"music": "music.town", "ambience": "amb.town"},
+    "crypt": {"music": "music.crypt", "ambience": "amb.dungeon"},
+    "cave": {"music": "music.cave", "ambience": "amb.cave"},
+    "castle": {"music": "music.castle", "ambience": "amb.castle"},
+    "boss": {"music": "music.boss", "ambience": "amb.dungeon"}
+  }
+}
