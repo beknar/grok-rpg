@@ -665,7 +665,7 @@ class Game:
             self.logical.blit(self.font.render("Click to enter town", True, (180, 160, 120)), (x + 40, y + 310))
             self._title_hit.append((r, cid))
         if not self.bank.ok:
-            warn = self.font.render("No baked assets. Run: PYTHONPATH=src python -m grok_rpg.baker", True, (255, 120, 100))
+            warn = self.font.render("No baked assets. Run: PYTHONPATH=src python3 -m grok_rpg.baker", True, (255, 120, 100))
             self.logical.blit(warn, (80, VIEW_H - 40))
 
     def handle_title(self, events: list[pygame.event.Event]) -> None:

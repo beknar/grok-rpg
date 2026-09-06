@@ -14,7 +14,7 @@ Do **not** generate original character, monster, tile, VFX, or UI art while the 
 
 ## Current status
 
-Playable v1 is in the tree (Phases 1–5 of [PLAN.md](PLAN.md)). Bake assets, then `PYTHONPATH=src python -m grok_rpg`.
+Playable v1 is in the tree (Phases 1–5 of [PLAN.md](PLAN.md)). Bake assets, then `PYTHONPATH=src python3 -m grok_rpg`. This host has `python3` only (no `python` shim).
 
 Still open: save/load, ITS identity sheets, remaining fodder/elites, balance (Phase 6).
 
@@ -238,7 +238,7 @@ grok-rpg/
   tests/
 ```
 
-Python import package: `grok_rpg`. Entry: `python -m grok_rpg`.
+Python import package: `grok_rpg`. Entry: `python3 -m grok_rpg`.
 
 ## Asset baker rules
 

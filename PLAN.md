@@ -147,13 +147,13 @@ Write `PLAN.md`, push.
 ### Phase 1 — Scaffold + baker + tests
 
 - `requirements.txt` (`pygame==2.6.1`, `Pillow==10.2.0`, `pytest`)
-- `src/grok_rpg` package, `python -m grok_rpg` entry (can no-op until Phase 2)
+- `src/grok_rpg` package, `python3 -m grok_rpg` entry (can no-op until Phase 2)
 - `tools/bake_assets.py` + `data/asset_manifest.json`
 - Probe Beowulf tileset; commit chosen `(col,row)` palette in the manifest
 - Tests: 16→128, 64→128, 128→128 copy; missing env fails
 - README “when code exists” section becomes true
 
-**Done when:** `python tools/bake_assets.py` fills `assets/baked/` on this machine.
+**Done when:** `python3 tools/bake_assets.py` fills `assets/baked/` on this machine.
 
 ### Phase 2 — Window, camera, tilemap, player move
 
@@ -227,7 +227,7 @@ Headless pygame: `SDL_VIDEODRIVER=dummy` if a smoke test opens a surface.
 
 ## Implementation order for the first coding session
 
-After this plan is on `main`, implement Phase 1–5 in one pass as far as they stay coherent: baker + engine + three classes + town economy. Stop at a runnable `python -m grok_rpg`. Phase 6 can follow.
+After this plan is on `main`, implement Phase 1–5 in one pass as far as they stay coherent: baker + engine + three classes + town economy. Stop at a runnable `python3 -m grok_rpg`. Phase 6 can follow.
 
 ## PR Plan
 

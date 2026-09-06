@@ -113,20 +113,22 @@ Exact bindings will live in data when the input module exists.
 
 ## Run
 
+This machine provides `python3`, not `python`. Use `python3` everywhere.
+
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate   # Windows: .venv\Scripts\activate
-pip install -r requirements.txt
+python3 -m pip install -r requirements.txt
 export GROK_RPG_ASSETS="/mnt/i/game assets/complete rpg creator bundle"
 export PYTHONPATH=src
-python tools/bake_assets.py
-python -m grok_rpg
+python3 tools/bake_assets.py
+python3 -m grok_rpg
 ```
 
 Tests (no bundle, no window):
 
 ```bash
-PYTHONPATH=src pytest -q
+PYTHONPATH=src python3 -m pytest -q
 ```
 
 ## For implementers
