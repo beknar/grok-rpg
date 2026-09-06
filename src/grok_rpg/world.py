@@ -2,18 +2,18 @@ from __future__ import annotations
 
 import random
 from dataclasses import dataclass, field
+from typing import Any
 
 from grok_rpg.constants import TILE
 
-# tile.palette frame indices from the baker grid_cells list
-FLOOR_DUNGEON = 0
-FLOOR_DUNGEON_2 = 1
+# Indices inside each baked tileset (floor, floor2, wall, solid)
+FLOOR = 0
+FLOOR_2 = 1
 WALL = 2
 WALL_SOLID = 3
 GRASS = 5
 GRASS_2 = 6
 PATH = 7
-FLOOR_DARK = 11
 
 
 @dataclass
@@ -28,6 +28,7 @@ class World:
     player_start: tuple[float, float] = (TILE * 3, TILE * 3)
     kind: str = "dungeon"
     seed: int = 0
+    tileset: str = "crypt"
 
     def in_bounds(self, tx: int, ty: int) -> bool:
         return 0 <= tx < self.width and 0 <= ty < self.height
@@ -54,7 +55,8 @@ def _fill(w: int, h: int, tile: int, blocked: bool) -> tuple[list[list[int]], li
     return tiles, block
 
 
-def make_town(rng: random.Random, seed: int = 0) -> World:
+def make_town(rng: random.Random, seed: int = 0, unlocked: list[str] | None = None) -> World:
+    unlocked = unlocked or ["crypt"]
     w, h = 24, 16
     tiles, block = _fill(w, h, GRASS, False)
     for y in range(h):
@@ -64,7 +66,6 @@ def make_town(rng: random.Random, seed: int = 0) -> World:
             if x == 0 or y == 0 or x == w - 1 or y == h - 1:
                 tiles[y][x] = WALL_SOLID
                 block[y][x] = True
-    # path down the middle
     for y in range(2, h - 2):
         tiles[y][w // 2] = PATH
         tiles[y][w // 2 + 1] = PATH
@@ -73,7 +74,7 @@ def make_town(rng: random.Random, seed: int = 0) -> World:
     for x in range(3, w - 3):
         tiles[h // 2][x] = PATH
         block[h // 2][x] = False
-    world = World(w, h, tiles, block, kind="town", seed=seed)
+    world = World(w, h, tiles, block, kind="town", seed=seed, tileset="town")
     world.player_start = ((w // 2) * TILE + 64, (h - 4) * TILE)
     world.npcs = [
         {"id": "vendor", "sprite": "npc.vendor", "name": "Butcher", "x": 6 * TILE, "y": 6 * TILE, "role": "vendor"},
@@ -81,11 +82,35 @@ def make_town(rng: random.Random, seed: int = 0) -> World:
         {"id": "craft", "sprite": "npc.librarian", "name": "Artificer", "x": 6 * TILE, "y": 11 * TILE, "role": "craft"},
         {"id": "trainer", "sprite": "npc.trainer", "name": "Trainer", "x": 17 * TILE, "y": 11 * TILE, "role": "flavor"},
     ]
-    world.portals = [{"to": "dungeon", "x": (w // 2) * TILE, "y": 2 * TILE, "label": "Crypt"}]
+    portals = [
+        {"to": "crypt", "x": 8 * TILE, "y": 2 * TILE, "label": "Crypt", "act": "crypt"},
+        {"to": "cave", "x": 12 * TILE, "y": 2 * TILE, "label": "Muddy Cave", "act": "cave"},
+        {"to": "castle", "x": 16 * TILE, "y": 2 * TILE, "label": "Castle", "act": "castle"},
+    ]
+    for p in portals:
+        p["locked"] = p["act"] not in unlocked
+    world.portals = portals
     return world
 
 
-def make_dungeon(rng: random.Random, seed: int = 0) -> World:
+def make_dungeon(
+    rng: random.Random,
+    seed: int = 0,
+    *,
+    kind: str = "crypt",
+    tileset: str = "crypt",
+    roster: list[str] | None = None,
+    boss: str = "necromancer",
+) -> World:
+    roster = roster or [
+        "dungeon_minion_01",
+        "dungeon_minion_02",
+        "dungeon_minion_03",
+        "undead_ghost",
+        "elemental_salamander",
+        "beast_beaver",
+        "enemy_mage",
+    ]
     w, h = 40, 30
     tiles, block = _fill(w, h, WALL_SOLID, True)
     rooms: list[tuple[int, int, int, int]] = []
@@ -96,40 +121,30 @@ def make_dungeon(rng: random.Random, seed: int = 0) -> World:
         rooms.append((x, y, rw, rh))
         for yy in range(y, y + rh):
             for xx in range(x, x + rw):
-                tiles[yy][xx] = FLOOR_DUNGEON if rng.random() > 0.2 else FLOOR_DUNGEON_2
+                floor_b = FLOOR if tileset == "cave" else FLOOR_2
+                tiles[yy][xx] = FLOOR if rng.random() > 0.2 else floor_b
                 block[yy][xx] = False
-    # corridors between consecutive rooms
     centers = [(x + rw // 2, y + rh // 2) for x, y, rw, rh in rooms]
     for (x0, y0), (x1, y1) in zip(centers, centers[1:]):
         cx, cy = x0, y0
         while cx != x1:
-            tiles[cy][cx] = FLOOR_DARK
+            tiles[cy][cx] = FLOOR
             block[cy][cx] = False
             cx += 1 if x1 > cx else -1
         while cy != y1:
-            tiles[cy][cx] = FLOOR_DARK
+            tiles[cy][cx] = FLOOR
             block[cy][cx] = False
             cy += 1 if y1 > cy else -1
-    world = World(w, h, tiles, block, kind="dungeon", seed=seed)
+    world = World(w, h, tiles, block, kind=kind, seed=seed, tileset=tileset)
     sx, sy = centers[0]
     world.player_start = (sx * TILE + 64, sy * TILE + 64)
-    world.portals = [{"to": "town", "x": sx * TILE + 64, "y": sy * TILE + 64, "label": "Town"}]
-
-    roster = [
-        "dungeon_minion_01",
-        "dungeon_minion_02",
-        "dungeon_minion_03",
-        "undead_ghost",
-        "elemental_salamander",
-        "beast_beaver",
-        "enemy_mage",
-    ]
+    world.portals = [{"to": "town", "x": sx * TILE + 64, "y": sy * TILE + 64, "label": "Town", "act": "town", "locked": False}]
     for cx, cy in centers[1:-1]:
-        kind = rng.choice(roster)
-        world.spawns.append((kind, cx * TILE + 64, cy * TILE + 64))
+        mid = rng.choice(roster)
+        world.spawns.append((mid, cx * TILE + 64, cy * TILE + 64))
         if rng.random() < 0.5:
-            extra = rng.choice(roster[:3])
+            extra = rng.choice(roster[: min(3, len(roster))])
             world.spawns.append((extra, cx * TILE + 20, cy * TILE + 90))
     bx, by = centers[-1]
-    world.spawns.append(("necromancer", bx * TILE + 64, by * TILE + 64))
+    world.spawns.append((boss, bx * TILE + 64, by * TILE + 64))
     return world

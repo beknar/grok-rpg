@@ -14,9 +14,9 @@ Do **not** generate original character, monster, tile, VFX, or UI art while the 
 
 ## Current status
 
-Playable through Phase 6 of [PLAN.md](PLAN.md): baker, three classes, town/crypt, vendor/craft, save/load, death, damage pops. Bake assets, then `PYTHONPATH=src python3 -m grok_rpg`. This host has `python3` only (no `python` shim).
+v1 loop plus **v2** in [PLAN.md](PLAN.md): three acts (crypt/cave/castle), affixes, wired input.json, necromancer summons, letterbox, portraits, spellbook. Bake assets, then `PYTHONPATH=src python3 -m grok_rpg`.
 
-`PYTHONPATH=src python3 -m pytest -q` is the gate. Still open: ITS identity sheets, remaining fodder/elites, deeper balance.
+`PYTHONPATH=src python3 -m pytest -q` is the gate. Still later: ITS identity sheets, remaining fodder, deeper balance.
 
 ## Stack (already on this machine)
 

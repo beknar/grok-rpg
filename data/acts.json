@@ -1,0 +1,27 @@
+{
+  "order": ["crypt", "cave", "castle"],
+  "crypt": {
+    "label": "Crypt",
+    "tileset": "crypt",
+    "boss": "necromancer",
+    "roster": ["dungeon_minion_01", "dungeon_minion_02", "dungeon_minion_03", "undead_ghost", "beast_beaver"],
+    "unlocks": "cave",
+    "ambience": "amb.dungeon"
+  },
+  "cave": {
+    "label": "Muddy Cave",
+    "tileset": "cave",
+    "boss": "cave_king",
+    "roster": ["dungeon_minion_04", "dungeon_minion_05", "elemental_salamander", "beast_beaver", "enemy_mage"],
+    "unlocks": "castle",
+    "ambience": "amb.dungeon"
+  },
+  "castle": {
+    "label": "Castle Dungeon",
+    "tileset": "castle",
+    "boss": "castle_lich",
+    "roster": ["dungeon_minion_06", "dungeon_minion_07", "dungeon_minion_08", "undead_ghost", "enemy_mage", "necromancer"],
+    "unlocks": null,
+    "ambience": "amb.dungeon"
+  }
+}

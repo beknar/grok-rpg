@@ -1,0 +1,16 @@
+{
+  "rarities": {
+    "common": {"weight": 62, "count": 0, "sell_mult": 1.0},
+    "magic": {"weight": 28, "count": 1, "sell_mult": 1.6},
+    "rare": {"weight": 8, "count": 2, "sell_mult": 2.4},
+    "legendary": {"weight": 2, "count": 3, "sell_mult": 4.0}
+  },
+  "elite_rarity_bonus": 12,
+  "pool": [
+    {"id": "keen", "name": "Keen", "stat": "power", "min": 2, "max": 6},
+    {"id": "sturdy", "name": "Sturdy", "stat": "armor", "min": 1, "max": 5},
+    {"id": "vital", "name": "Vital", "stat": "hp", "min": 8, "max": 24},
+    {"id": "fierce", "name": "Fierce", "stat": "power", "min": 4, "max": 10},
+    {"id": "iron", "name": "Iron", "stat": "armor", "min": 3, "max": 8}
+  ]
+}

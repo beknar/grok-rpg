@@ -173,7 +173,7 @@ def default_jobs() -> list[dict[str, Any]]:
                 loop=anim not in ("dead", "attack", "hit"),
             ))
 
-    for n in (1, 2, 3):
+    for n in (1, 2, 3, 4, 5, 6, 7, 8):
         jobs.append({
             "id": f"mon.dungeon_minion_{n:02d}.idle",
             "category": f"monsters/minion_{n:02d}",
@@ -183,6 +183,7 @@ def default_jobs() -> list[dict[str, Any]]:
             "fps": 6,
             "loop": True,
             "scale_to": 128,
+            "required": n <= 3,
         })
 
     vfx_files = {
@@ -236,6 +237,60 @@ def default_jobs() -> list[dict[str, Any]]:
         "loop": False,
         "scale_to": 128,
     })
+    jobs.append({
+        "id": "tile.crypt",
+        "category": "tiles",
+        "source": TILESET,
+        "op": "grid_cells",
+        "cell": 16,
+        "cells": [[64, 3], [65, 3], [70, 3], [81, 3], [75, 3], [5, 23], [8, 23], [12, 24], [16, 24], [70, 7], [77, 9], [64, 9]],
+        "fps": 0,
+        "loop": False,
+        "scale_to": 128,
+    })
+    jobs.append({
+        "id": "tile.town",
+        "category": "tiles",
+        "source": TILESET,
+        "op": "grid_cells",
+        "cell": 16,
+        "cells": [[64, 3], [65, 3], [70, 3], [81, 3], [75, 3], [5, 23], [8, 23], [12, 24], [16, 24], [70, 7], [77, 9], [64, 9]],
+        "fps": 0,
+        "loop": False,
+        "scale_to": 128,
+    })
+    jobs.append({
+        "id": "tile.cave",
+        "category": "tiles",
+        "source": (
+            "mana seed pixel art tileset collection/19.10a - Muddy Cave/"
+            "packaged/muddy cave sheets/muddy cave 16x16 v1.png"
+        ),
+        "op": "grid_cells",
+        "cell": 16,
+        "cells": [[0, 0], [1, 0], [2, 0], [3, 0], [4, 0]],
+        "fps": 0,
+        "loop": False,
+        "scale_to": 128,
+    })
+    jobs.append({
+        "id": "tile.castle",
+        "category": "tiles",
+        "source": TILESET,
+        "op": "grid_cells",
+        "cell": 16,
+        "cells": [[34, 3], [35, 3], [40, 3], [47, 3]],
+        "fps": 0,
+        "loop": False,
+        "scale_to": 128,
+    })
+    portraits = {
+        "portrait.fighter": "fantasy character avatars/png/square_512x512/human_male.png",
+        "portrait.mage": "fantasy character avatars/png/square_512x512/elf_male.png",
+        "portrait.cleric": "fantasy character avatars/png/square_512x512/dwarf_male.png",
+    }
+    for pid, src in portraits.items():
+        jobs.append(_copy(pid, src, category="portraits"))
 
     loot_files = {
         "item.ghost_ectoplasm": "monloot_16_ghost_ectoplasm_xxx.png",

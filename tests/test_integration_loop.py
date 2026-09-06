@@ -54,7 +54,7 @@ def test_vendor_and_craft_equip() -> None:
     assert gained > 0
     p.inv.add("monster_bone", 3)
     p.inv.add("whetstone", 1)
-    assert p.inv.craft(g.data["recipes"]["bone_sword"])
+    assert p.inv.craft(g.data["recipes"]["bone_sword"], g.data["items"])
     assert p.inv.try_equip("bone_sword", "fighter", g.data["items"]) is None
     p.refresh_stats(g.data)
     assert p.power > g.data["classes"]["fighter"]["power"]
@@ -99,3 +99,43 @@ def test_other_classes_boot() -> None:
         assert g.player is not None
         assert g.player.class_id == cid
         assert g.world is not None
+
+
+def test_acts_lock_and_unlock() -> None:
+    g = Game(headless=True, world_seed=9)
+    g.start_class("fighter")
+    cave = next(p for p in g.world.portals if p["to"] == "cave")  # type: ignore[union-attr]
+    assert cave["locked"] is True
+    g.enter_map("crypt")
+    boss = next(m for m in g.monsters if m.spec_id == "necromancer")
+    boss.hp = 0
+    _tick(g, 2)
+    assert "cave" in g.unlocked_acts
+    g.enter_map("town")
+    cave = next(p for p in g.world.portals if p["to"] == "cave")  # type: ignore[union-attr]
+    assert cave["locked"] is False
+
+
+def test_necromancer_summons() -> None:
+    g = Game(headless=True, world_seed=2)
+    g.start_class("fighter")
+    g.enter_map("crypt")
+    boss = next(m for m in g.monsters if m.spec_id == "necromancer")
+    g.player.x, g.player.y = boss.x, boss.y  # type: ignore[union-attr]
+    before = len(g.monsters)
+    boss.next_attack = 0
+    boss.next_summon = 0
+    g.dt = 0.2
+    g.time = 10
+    g.simulate()
+    assert len(g.monsters) >= before
+
+
+def test_letterbox_mapping() -> None:
+    g = Game(headless=True)
+    g.letter_scale = 2
+    g.letter_ox = 10
+    g.letter_oy = 20
+    lx, ly = g._map_window(10 + 4, 20 + 6)
+    assert lx == 2
+    assert ly == 3

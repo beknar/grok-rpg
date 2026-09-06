@@ -2,7 +2,7 @@
 
 Source of truth for *what* the game is: [AGENTS.md](AGENTS.md) and [README.md](README.md). This file is *how* we build it, in order, without leaving the Diablo loop (kill → loot → sell → craft).
 
-**Progress:** Phases 0–7 are in the tree: baker, playable loop, save/load, unit + headless integration tests. Remaining polish: ITS identity sheets, more fodder, balance.
+**Progress:** v1 (Phases 0–7) and **v2** are in the tree: three acts, affixes, input map, summons, letterbox, portraits, spellbook. Later: ITS identity sheets, remaining fodder.
 
 ## Goal (v1 playable)
 
@@ -262,9 +262,30 @@ Manual (this machine, not CI): bake + play the loop, F5/F9, die in the crypt, co
 | pygame mixer fails without audio device | Catch init error; run silent |
 | Bundle path differs on Windows | `GROK_RPG_ASSETS` then `I:\...` then `/mnt/i/...` |
 
-## Implementation order for the first coding session
+## v2
 
-After this plan is on `main`, implement Phase 1–5 in one pass as far as they stay coherent: baker + engine + three classes + town economy. Stop at a runnable `python3 -m grok_rpg`. Phase 6 can follow.
+v1 is the one-crypt loop. v2 is the next playable expansion from leftover AGENTS.md items. Still **not** v2: ITS 2048×8192 identity sheets, all 117 fodder, mining sim.
+
+### v2 features
+
+1. **Three acts** — town portals: Crypt (Beowulf gray), Muddy Cave (Mana Seed 16×16 cave tiles), Castle (Beowulf fire-dungeon tiles). Killing the act elite unlocks the next portal.
+2. **Affixes** — magic / rare / legendary gear rolls 1–3 stat affixes (`data/affixes.json`). Elites can drop gear; crafting rolls rarity.
+3. **Input map** — `data/input.json` drives keys. Skills: 1–4 plus Q/R/F (E stays interact). B = spellbook.
+4. **Necromancer summons** — elite periodically spawns fodder (cap 3).
+5. **More fodder** — minions 04–08.
+6. **Letterbox** — resizable window, integer scale, black bars, mouse mapped through the letterbox.
+7. **Portraits** — title cards use fantasy avatar icons (fighter/mage/cleric).
+8. **GUI chrome** — vendor/craft/inventory/spellbook blit baked GUI Pro popup/frame.
+9. **Mage charge VFX** — projectile casts spawn `char.mage.charge`.
+10. **Spellbook** — B lists class abilities with icons.
+
+Save version **2** (v1 files still load). Tests: affix roll seeded, act unlock, summon cap, input bindings, letterbox mapping.
+
+### PR 8: v2 acts, affixes, input, summons, HUD
+
+- **Description:** Implement the v2 list above with unit + integration coverage.
+- **Files/components affected:** `PLAN.md`, `src/grok_rpg/*`, `data/*`, `tests/*`, `README.md`, `AGENTS.md`
+- **Dependencies:** PR 7
 
 ## PR Plan
 

@@ -14,6 +14,15 @@ def draw_bar(surf: pygame.Surface, x: int, y: int, w: int, h: int, frac: float, 
     pygame.draw.rect(surf, (240, 220, 160), (x, y, w, h), 1)
 
 
+def panel_chrome(surf: pygame.Surface, box: pygame.Rect, bank: Any) -> None:
+    raw = bank.first("ui.popup") or bank.first("ui.frame")
+    if raw:
+        surf.blit(pygame.transform.scale(raw, (box.w, box.h)), box.topleft)
+    else:
+        pygame.draw.rect(surf, (16, 12, 10), box)
+    pygame.draw.rect(surf, (180, 150, 80), box, 2)
+
+
 def blit_icon(surf: pygame.Surface, icon: pygame.Surface | None, x: int, y: int, size: int = 48) -> None:
     if icon is None:
         pygame.draw.rect(surf, (50, 40, 30), (x, y, size, size))
@@ -50,9 +59,8 @@ def hud(surf: pygame.Surface, player: Any, abilities: dict, bank: Any, font: pyg
 
 def panel_inventory(surf: pygame.Surface, player: Any, items: dict, bank: Any, font: pygame.font.Font) -> None:
     box = pygame.Rect(80, 60, VIEW_W - 160, VIEW_H - 140)
-    pygame.draw.rect(surf, (18, 12, 10), box)
-    pygame.draw.rect(surf, (180, 150, 80), box, 2)
-    surf.blit(font.render("Inventory  [I close]  click item: use/equip   vendor/craft nearby with E", True, (240, 220, 180)), (box.x + 12, box.y + 10))
+    panel_chrome(surf, box, bank)
+    surf.blit(font.render("Inventory  [I close]  click to use/equip", True, (240, 220, 180)), (box.x + 12, box.y + 10))
     x, y = box.x + 16, box.y + 40
     i = 0
     player._inv_hit = []
@@ -68,12 +76,25 @@ def panel_inventory(surf: pygame.Surface, player: Any, items: dict, bank: Any, f
         if i % 10 == 0:
             x = box.x + 16
             y += 58
+    y += 64
+    surf.blit(font.render("Gear", True, (240, 220, 180)), (box.x + 16, y))
+    y += 22
+    for g in player.inv.gear:
+        r = pygame.Rect(box.x + 16, y, 700, 28)
+        pygame.draw.rect(surf, (40, 28, 18), r)
+        blit_icon(surf, bank.first(g.icon), r.x, r.y, 24)
+        surf.blit(font.render(f"{g.name} [{g.rarity}]", True, (240, 220, 180)), (r.x + 32, r.y + 4))
+        player._inv_hit.append((r, g.uid))
+        y += 32
+        if y > box.bottom - 100:
+            break
     ey = box.bottom - 90
     surf.blit(font.render("Equipped", True, (240, 220, 180)), (box.x + 16, ey - 18))
     x = box.x + 16
     for slot in SLOTS:
-        item_id = player.inv.equipped.get(slot)
-        icon = bank.first(items[item_id]["icon"]) if item_id else None
+        uid = player.inv.equipped.get(slot)
+        piece = player.inv.find_gear(uid) if uid else None
+        icon = bank.first(piece.icon) if piece else None
         blit_icon(surf, icon, x, ey, 40)
         surf.blit(font.render(slot[:3], True, (180, 160, 120)), (x, ey + 42))
         x += 48
@@ -81,8 +102,7 @@ def panel_inventory(surf: pygame.Surface, player: Any, items: dict, bank: Any, f
 
 def panel_vendor(surf: pygame.Surface, player: Any, items: dict, bank: Any, font: pygame.font.Font) -> None:
     box = pygame.Rect(200, 80, 880, 700)
-    pygame.draw.rect(surf, (16, 12, 10), box)
-    pygame.draw.rect(surf, (180, 150, 80), box, 2)
+    panel_chrome(surf, box, bank)
     surf.blit(font.render("Butcher — click a stack to sell   [Esc close]", True, (240, 220, 180)), (box.x + 16, box.y + 12))
     x, y = box.x + 16, box.y + 50
     player._vendor_hit = []
@@ -102,12 +122,20 @@ def panel_vendor(surf: pygame.Surface, player: Any, items: dict, bank: Any, font
         y += 44
         if y > box.bottom - 60:
             break
+    for g in player.inv.gear:
+        r = pygame.Rect(x, y, 400, 40)
+        pygame.draw.rect(surf, (40, 28, 18), r)
+        blit_icon(surf, bank.first(g.icon), x, y, 36)
+        surf.blit(font.render(f"{g.name}  {max(1, g.sell // 2)}g", True, (240, 220, 180)), (x + 44, y + 10))
+        player._vendor_hit.append((r, g.uid))
+        y += 44
+        if y > box.bottom - 60:
+            break
 
 
 def panel_craft(surf: pygame.Surface, player: Any, recipes: dict, items: dict, bank: Any, font: pygame.font.Font) -> None:
     box = pygame.Rect(200, 80, 880, 700)
-    pygame.draw.rect(surf, (16, 12, 10), box)
-    pygame.draw.rect(surf, (180, 150, 80), box, 2)
+    panel_chrome(surf, box, bank)
     surf.blit(font.render("Artificer — click a recipe to craft   [Esc close]", True, (240, 220, 180)), (box.x + 16, box.y + 12))
     y = box.y + 50
     player._craft_hit = []
@@ -123,3 +151,18 @@ def panel_craft(surf: pygame.Surface, player: Any, recipes: dict, items: dict, b
         surf.blit(font.render(need, True, (200, 190, 160)), (r.x + 64, r.y + 36))
         player._craft_hit.append((r, rid))
         y += 80
+
+
+def panel_spellbook(surf: pygame.Surface, player: Any, abilities: dict, bank: Any, font: pygame.font.Font) -> None:
+    box = pygame.Rect(200, 80, 880, 700)
+    panel_chrome(surf, box, bank)
+    surf.blit(font.render("Spellbook  [B close]", True, (240, 220, 180)), (box.x + 16, box.y + 12))
+    y = box.y + 50
+    for aid in player.ability_ids:
+        ab = abilities[aid]
+        r = pygame.Rect(box.x + 16, y, 840, 64)
+        pygame.draw.rect(surf, (30, 24, 18), r)
+        blit_icon(surf, bank.first(ab.get("icon")), r.x + 8, r.y + 8, 48)
+        surf.blit(font.render(ab["name"], True, (240, 220, 180)), (r.x + 64, r.y + 8))
+        surf.blit(font.render(f"{ab['kind']}  dmg {ab.get('damage', 0)}  cost {ab.get('cost', 0)}", True, (200, 190, 160)), (r.x + 64, r.y + 32))
+        y += 72

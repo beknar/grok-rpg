@@ -18,7 +18,7 @@ def test_craft_and_sell() -> None:
     inv.add("monster_bone", 3)
     inv.add("whetstone", 1)
     rec = data["recipes"]["bone_sword"]
-    assert inv.craft(rec)
+    assert inv.craft(rec, data["items"])
     assert inv.count("bone_sword") == 1
     assert inv.count("monster_bone") == 0
     gained = inv.sell("bone_sword", data["items"], 1)
@@ -34,7 +34,9 @@ def test_class_gate() -> None:
     assert err
     err = inv.try_equip("bone_sword", "fighter", data["items"])
     assert err is None
-    assert inv.equipped["weapon"] == "bone_sword"
+    uid = inv.equipped["weapon"]
+    assert uid
+    assert inv.find_gear(uid).base_id == "bone_sword"
 
 
 def test_loot_seeded() -> None:

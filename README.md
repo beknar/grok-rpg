@@ -4,7 +4,7 @@ A **128×128 pixel-art Diablo-style ARPG**: slay monsters, pick up loot, sell it
 
 This repository is the game project. Art and audio come from the **Complete RPG Creator Bundle** on disk. They are not stored in git.
 
-**Status:** implementation in progress. Read [PLAN.md](PLAN.md) for phases, then [AGENTS.md](AGENTS.md) for asset and class rules.
+**Status:** v1 loop + v2 acts/affixes. Read [PLAN.md](PLAN.md), then [AGENTS.md](AGENTS.md).
 
 ## What you will play
 
@@ -133,7 +133,7 @@ PYTHONPATH=src python3 -m pytest -q -m unit
 PYTHONPATH=src python3 -m pytest -q -m integration
 ```
 
-In-game: **F5** save, **F9** load (`saves/slot1.json`). Death returns you to town with loot kept.
+In-game: **F5** save, **F9** load (`saves/slot1.json`). Death returns you to town with loot kept. Town has three act portals (Crypt, Cave, Castle); kill the act elite to unseal the next. **B** opens the spellbook. Skills: **1–4** and **Q/R/F**.
 
 ## For implementers
 

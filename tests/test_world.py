@@ -11,7 +11,9 @@ def test_town_seed_stable() -> None:
     b = make_town(random.Random(42), seed=42)
     assert a.tiles == b.tiles
     assert a.npcs[0]["role"] == "vendor"
-    assert any(p["to"] == "dungeon" for p in a.portals)
+    assert any(p["to"] == "crypt" for p in a.portals)
+    cave = next(p for p in a.portals if p["to"] == "cave")
+    assert cave["locked"] is True
 
 
 def test_dungeon_seed_stable() -> None:

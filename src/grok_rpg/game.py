@@ -8,15 +8,17 @@ from typing import Any
 
 import pygame
 
+from grok_rpg.affix import roll_gear
 from grok_rpg.audio import Audio
 from grok_rpg.combat import CooldownBank, aabb_hit, apply_damage, dist, norm, try_cast, undead_mult
 from grok_rpg.constants import FPS, HITBOX, LOOT_MAGNET, TILE, VIEW_H, VIEW_W
 from grok_rpg.data_load import catalog, validate_catalog
+from grok_rpg.inputmap import action_pressed, keydown_action
 from grok_rpg.inventory import Inventory
 from grok_rpg.loot import roll_table
 from grok_rpg.save import player_state, read_save, slot_path, write_save
 from grok_rpg.sprites import Animator, SpriteBank
-from grok_rpg.ui import hud, panel_craft, panel_inventory, panel_vendor
+from grok_rpg.ui import hud, panel_craft, panel_inventory, panel_spellbook, panel_vendor
 from grok_rpg.world import World, make_dungeon, make_town
 
 
@@ -162,6 +164,12 @@ class Monster(Actor):
         self.gold_range = spec.get("gold") or [1, 3]
         self.next_attack = 0.0
         self.power = self.damage
+        self.elite = bool(spec.get("elite"))
+        self.summon_id = spec.get("summon")
+        self.summon_cd = float(spec.get("summon_cd", 0) or 0)
+        self.summon_max = int(spec.get("summon_max", 0) or 0)
+        self.next_summon = 0.0
+        self.summoned = False
 
 
 class Game:
@@ -178,8 +186,12 @@ class Game:
             if info.current_w >= VIEW_W * 2 and info.current_h >= VIEW_H * 2:
                 scale = 2
         self.scale = scale
-        self.window = pygame.display.set_mode((VIEW_W * scale, VIEW_H * scale))
+        flags = 0 if headless else pygame.RESIZABLE
+        self.window = pygame.display.set_mode((VIEW_W * scale, VIEW_H * scale), flags)
         self.logical = pygame.Surface((VIEW_W, VIEW_H))
+        self.letter_ox = 0
+        self.letter_oy = 0
+        self.letter_scale = scale
         self.clock = pygame.time.Clock()
         self.font = pygame.font.Font(None, 22)
         self.big = pygame.font.Font(None, 42)
@@ -212,17 +224,24 @@ class Game:
         self.tile_frames: list[pygame.Surface] = []
         self.running = True
         self.hover_class = "fighter"
+        self.unlocked_acts = ["crypt"]
+        self.bindings = self.data["input"]
 
     def say(self, text: str) -> None:
         self.message = text
         self.message_t = 2.5
 
+    def _map_window(self, mx: float, my: float) -> tuple[float, float]:
+        return (mx - self.letter_ox) / max(1, self.letter_scale), (my - self.letter_oy) / max(1, self.letter_scale)
+
     def world_mouse(self) -> tuple[float, float]:
         mx, my = pygame.mouse.get_pos()
-        return mx / self.scale + self.cam_x, my / self.scale + self.cam_y
+        lx, ly = self._map_window(mx, my)
+        return lx + self.cam_x, ly + self.cam_y
 
     def start_class(self, class_id: str) -> None:
         self.player = Player(class_id, self.data)
+        self.unlocked_acts = ["crypt"]
         self.enter_map("town")
         self.mode = "play"
         self.ui = "none"
@@ -230,20 +249,44 @@ class Game:
 
     def enter_map(self, kind: str, *, keep_position: bool = False) -> None:
         assert self.player
-        seed = self.world_seed if kind == "town" else self.world_seed + 1
-        gen = random.Random(seed)
-        self.world = make_town(gen, seed=seed) if kind == "town" else make_dungeon(gen, seed=seed)
+        if kind == "dungeon":
+            kind = "crypt"
+        acts = self.data["acts"]
+        if kind == "town":
+            seed = self.world_seed
+            gen = random.Random(seed)
+            self.world = make_town(gen, seed=seed, unlocked=self.unlocked_acts)
+            amb = "amb.town"
+        else:
+            spec = acts[kind]
+            offset = {"crypt": 1, "cave": 2, "castle": 3}.get(kind, 1)
+            seed = self.world_seed + offset
+            gen = random.Random(seed)
+            self.world = make_dungeon(
+                gen,
+                seed=seed,
+                kind=kind,
+                tileset=spec["tileset"],
+                roster=list(spec["roster"]),
+                boss=spec["boss"],
+            )
+            amb = spec.get("ambience") or "amb.dungeon"
         if not keep_position:
             self.player.x, self.player.y = self.world.player_start
         elif not self.world.walkable_px(self.player.x, self.player.y, self.player.radius):
             self.player.x, self.player.y = self.world.player_start
-        self.monsters = [Monster(sid, x, y, self.data["monsters"][sid]) for sid, x, y in self.world.spawns]
+        self.monsters = []
+        for sid, x, y in self.world.spawns:
+            if sid not in self.data["monsters"]:
+                continue
+            self.monsters.append(Monster(sid, x, y, self.data["monsters"][sid]))
         self.projectiles.clear()
         self.aoes.clear()
         self.loot.clear()
         self.vfx.clear()
-        self.tile_frames = self.bank.frames("tile.palette")
-        self.audio.ambience("amb.town" if kind == "town" else "amb.dungeon")
+        ts = self.world.tileset
+        self.tile_frames = self.bank.frames(f"tile.{ts}") or self.bank.frames("tile.palette")
+        self.audio.ambience(amb)
         self.ui = "none"
         if kind == "town" and not self.headless:
             self.save_to(slot_path(), quiet=True)
@@ -282,6 +325,8 @@ class Game:
                 self.pop(ev.x, ev.y, str(int(round(ev.damage))), (255, 80, 80))
             if ev.kind == "heal" and ev.heal:
                 self.pop(ev.x, ev.y, f"+{int(round(ev.heal))}", (80, 220, 120))
+        if p.class_id == "mage" and ability.get("kind") == "projectile":
+            self.vfx.append(Vfx("char.mage.charge", p.x, p.y, life=0.4))
         p.facing = facing_from(aim_x - p.x, aim_y - p.y)
 
     def save_to(self, path=None, *, quiet: bool = False) -> None:
@@ -296,6 +341,7 @@ class Game:
                 world_seed=self.world_seed,
                 time=self.time,
                 deaths=self.deaths,
+                unlocked_acts=self.unlocked_acts,
             ),
         )
         if not quiet:
@@ -308,9 +354,10 @@ class Game:
         self.rng = random.Random(self.world_seed + 7)
         self.time = float(data.get("time", 0))
         self.deaths = int(data.get("deaths", 0))
+        self.unlocked_acts = list(data.get("unlocked_acts") or ["crypt"])
         self.player = Player(data["class_id"], self.data)
         pdata = data["player"]
-        self.player.inv = Inventory.from_dict(pdata["inventory"])
+        self.player.inv = Inventory.from_dict(pdata["inventory"], self.data["items"])
         self.player.refresh_stats(self.data)
         self.player.hp = min(float(pdata["hp"]), self.player.hp_max)
         self.player.resource = float(pdata["resource"])
@@ -350,7 +397,16 @@ class Game:
     def use_item(self, item_id: str) -> None:
         p = self.player
         assert p
-        spec = self.data["items"][item_id]
+        piece = p.inv.find_gear(item_id)
+        if piece:
+            err = p.inv.try_equip(item_id, p.class_id, self.data["items"])
+            self.say(err or f"Equipped {piece.name}")
+            self.audio.play("sfx.bag")
+            p.refresh_stats(self.data)
+            return
+        spec = self.data["items"].get(item_id)
+        if not spec:
+            return
         if spec.get("kind") == "consumable":
             if not p.inv.remove(item_id, 1):
                 return
@@ -370,44 +426,49 @@ class Game:
         p = self.player
         assert p and self.world
         keys = pygame.key.get_pressed()
+        binds = self.bindings
         for ev in events:
-            if ev.type == pygame.KEYDOWN:
-                if ev.key == pygame.K_ESCAPE:
+            if ev.type == pygame.VIDEORESIZE and not self.headless:
+                self.window = pygame.display.set_mode(ev.size, pygame.RESIZABLE)
+            elif ev.type == pygame.KEYDOWN:
+                if keydown_action(ev.key, binds, "pause"):
                     if self.ui != "none":
                         self.ui = "none"
                     else:
                         self.mode = "title"
-                elif ev.key == pygame.K_i or ev.key == pygame.K_TAB:
+                elif keydown_action(ev.key, binds, "inventory"):
                     self.ui = "none" if self.ui == "inventory" else "inventory"
-                elif ev.key == pygame.K_c:
+                elif keydown_action(ev.key, binds, "craft"):
                     self.ui = "none" if self.ui == "craft" else "craft"
-                elif ev.key == pygame.K_F3:
+                elif keydown_action(ev.key, binds, "spellbook"):
+                    self.ui = "none" if self.ui == "spellbook" else "spellbook"
+                elif keydown_action(ev.key, binds, "debug"):
                     self.debug = not self.debug
-                elif ev.key == pygame.K_F5:
+                elif keydown_action(ev.key, binds, "save"):
                     self.save_to()
-                elif ev.key == pygame.K_F9:
+                elif keydown_action(ev.key, binds, "load"):
                     try:
                         self.load_from()
                     except FileNotFoundError:
                         self.say("No save yet.")
-                elif ev.key == pygame.K_e:
+                elif keydown_action(ev.key, binds, "interact"):
                     self.try_interact()
-                elif ev.key == pygame.K_h:
+                elif keydown_action(ev.key, binds, "potion_hp"):
                     if p.inv.count("health_potion"):
                         self.use_item("health_potion")
-                elif ev.key in (pygame.K_1, pygame.K_2, pygame.K_3, pygame.K_4):
-                    idx = ev.key - pygame.K_1
-                    if 0 <= idx < len(p.ability_ids):
-                        self.cast(p.ability_ids[idx])
+                else:
+                    for i, action in enumerate(("skill1", "skill2", "skill3", "skill4")):
+                        if keydown_action(ev.key, binds, action) and i < len(p.ability_ids):
+                            self.cast(p.ability_ids[i])
+                            break
             elif ev.type == pygame.MOUSEBUTTONDOWN and ev.button == 1:
+                mx, my = self._map_window(*ev.pos)
                 if self.ui == "inventory":
-                    mx, my = ev.pos[0] / self.scale, ev.pos[1] / self.scale
                     for r, item_id in p._inv_hit:
                         if r.collidepoint(mx, my):
                             self.use_item(item_id)
                             break
                 elif self.ui == "vendor":
-                    mx, my = ev.pos[0] / self.scale, ev.pos[1] / self.scale
                     for r, item_id in p._vendor_hit:
                         if r.collidepoint(mx, my):
                             gained = p.inv.sell(item_id, self.data["items"], 1)
@@ -416,19 +477,25 @@ class Game:
                                 self.say(f"Sold for {gained}g")
                             break
                 elif self.ui == "craft":
-                    mx, my = ev.pos[0] / self.scale, ev.pos[1] / self.scale
                     for r, rid in p._craft_hit:
                         if r.collidepoint(mx, my):
                             rec = self.data["recipes"][rid]
-                            if p.inv.craft(rec):
+                            if p.inv.can_craft(rec):
+                                p.inv.craft(rec, self.data["items"])
+                                out = rec["output"]
+                                spec = self.data["items"][out]
+                                if spec.get("kind") == "equipment" and p.inv.gear:
+                                    rolled = roll_gear(out, spec, self.rng, self.data["affixes"])
+                                    p.inv.gear[-1] = rolled
+                                    self.say(f"Crafted {rolled.name} ({rolled.rarity})")
+                                else:
+                                    self.say(f"Crafted {spec['name']}")
                                 self.audio.play("sfx.shop")
-                                self.say(f"Crafted {self.data['items'][rec['output']]['name']}")
                             else:
                                 self.say("Missing materials.")
                             break
                 else:
-                    mx, my = self.world_mouse()
-                    p.click_target = (mx, my)
+                    p.click_target = self.world_mouse()
                     self.cast(p.ability_ids[0])
             elif ev.type == pygame.MOUSEBUTTONUP and ev.button == 1:
                 p.click_target = None
@@ -436,13 +503,13 @@ class Game:
         if self.ui != "none":
             return
         ax = ay = 0.0
-        if keys[pygame.K_w] or keys[pygame.K_UP]:
+        if action_pressed(keys, binds, "move_up"):
             ay -= 1
-        if keys[pygame.K_s] or keys[pygame.K_DOWN]:
+        if action_pressed(keys, binds, "move_down"):
             ay += 1
-        if keys[pygame.K_a] or keys[pygame.K_LEFT]:
+        if action_pressed(keys, binds, "move_left"):
             ax -= 1
-        if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
+        if action_pressed(keys, binds, "move_right"):
             ax += 1
         if ax or ay:
             p.click_target = None
@@ -485,6 +552,9 @@ class Game:
                 return
         for portal in self.world.portals:
             if dist(p.x, p.y, portal["x"], portal["y"]) < 100:
+                if portal.get("locked"):
+                    self.say(f"{portal['label']} is sealed. Defeat the previous act.")
+                    return
                 self.enter_map(portal["to"])
                 self.say(f"Entered {portal['label']}.")
                 return
@@ -537,6 +607,16 @@ class Game:
                     ))
                     if m.vfx:
                         self.vfx.append(Vfx(m.vfx, m.x, m.y))
+                if m.summon_id and self.time >= m.next_summon and m.summon_cd > 0:
+                    live = sum(1 for o in self.monsters if o.hp > 0 and o.summoned)
+                    if live < m.summon_max and m.summon_id in self.data["monsters"]:
+                        sx = m.x + self.rng.randint(-40, 40)
+                        sy = m.y + self.rng.randint(-40, 40)
+                        pup = Monster(m.summon_id, sx, sy, self.data["monsters"][m.summon_id])
+                        pup.summoned = True
+                        self.monsters.append(pup)
+                        self.vfx.append(Vfx("vfx.void_portal", sx, sy))
+                    m.next_summon = self.time + m.summon_cd
                 elif aabb_hit(m.x, m.y, m.radius + 8, p.x, p.y, p.radius):
                     dealt = self.deal(p, max(1.0, m.damage - p.armor * 0.3))
                     self.audio.play("sfx.sword_hit", 0.35)
@@ -631,6 +711,23 @@ class Game:
         if gold:
             self.player.inv.add("gold", gold)  # type: ignore[union-attr]
             self.pop(m.x, m.y - 20, f"+{gold}g", (240, 210, 80))
+        if m.elite:
+            acts = self.data["acts"]
+            for act_id, spec in acts.items():
+                if not isinstance(spec, dict):
+                    continue
+                if spec.get("boss") == m.spec_id:
+                    nxt = spec.get("unlocks")
+                    if nxt and nxt not in self.unlocked_acts:
+                        self.unlocked_acts.append(nxt)
+                        self.say(f"{spec['label']} falls. {acts[nxt]['label']} opens.")
+            if self.rng.random() < 0.55:
+                pool = [iid for iid, s in self.data["items"].items() if s.get("kind") == "equipment"]
+                if pool:
+                    base = self.rng.choice(pool)
+                    gear = roll_gear(base, self.data["items"][base], self.rng, self.data["affixes"], elite=True)
+                    self.player.inv.add_gear(gear)
+                    self.pop(m.x, m.y + 12, gear.name, (180, 220, 255))
         self.audio.play("sfx.monster", 0.5)
         dead_id = f"mon.{m.spec_id}.dead"
         if dead_id in self.bank.index:
@@ -647,7 +744,8 @@ class Game:
                 return base + f"walk_{actor.facing}"
             return base + "idle"
         if isinstance(actor, Monster):
-            base = f"mon.{actor.spec_id}."
+            alias = {"cave_king": "elemental_salamander", "castle_lich": "necromancer"}.get(actor.spec_id, actor.spec_id)
+            base = f"mon.{alias}."
             if actor.spec_id.startswith("dungeon_minion"):
                 n = actor.spec_id[-2:]
                 return f"mon.dungeon_minion_{n}.idle"
@@ -694,8 +792,10 @@ class Game:
             label = self.font.render(npc["name"], True, (255, 230, 180))
             self.logical.blit(label, (npc["x"] - self.cam_x - 20, npc["y"] - self.cam_y - 70))
         for portal in w.portals:
-            pygame.draw.circle(self.logical, (120, 80, 200), (int(portal["x"] - self.cam_x), int(portal["y"] - self.cam_y)), 18, 2)
-            self.logical.blit(self.font.render(portal["label"], True, (200, 180, 255)), (portal["x"] - self.cam_x - 20, portal["y"] - self.cam_y - 36))
+            col = (80, 80, 90) if portal.get("locked") else (120, 80, 200)
+            pygame.draw.circle(self.logical, col, (int(portal["x"] - self.cam_x), int(portal["y"] - self.cam_y)), 18, 2)
+            tag = portal["label"] + (" (sealed)" if portal.get("locked") else "")
+            self.logical.blit(self.font.render(tag, True, (200, 180, 255)), (portal["x"] - self.cam_x - 30, portal["y"] - self.cam_y - 36))
 
         for drop in self.loot:
             icon = self.bank.first(self.data["items"][drop.item_id]["icon"])
@@ -745,7 +845,7 @@ class Game:
             pygame.draw.rect(self.logical, (0, 255, 0), (p.x - self.cam_x - p.radius, p.y - self.cam_y - p.radius, p.radius * 2, p.radius * 2), 1)
 
         hud(self.logical, p, self.data["abilities"], self.bank, self.font)
-        hint = "WASD move  LMB attack  1-4 skills  E interact  I inv  C craft  H potion  F5 save  F9 load  Esc"
+        hint = "WASD move  LMB attack  1-4/QRF skills  E interact  I inv  C craft  B book  H potion  F5/F9"
         self.logical.blit(self.font.render(hint, True, (200, 190, 160)), (16, VIEW_H - 22))
         if self.message_t > 0:
             self.logical.blit(self.big.render(self.message, True, (255, 230, 160)), (80, 120))
@@ -755,6 +855,8 @@ class Game:
             panel_vendor(self.logical, p, self.data["items"], self.bank, self.font)
         elif self.ui == "craft":
             panel_craft(self.logical, p, self.data["recipes"], self.data["items"], self.bank, self.font)
+        elif self.ui == "spellbook":
+            panel_spellbook(self.logical, p, self.data["abilities"], self.bank, self.font)
 
     def draw_title(self) -> None:
         self.logical.fill((10, 8, 12))
@@ -770,9 +872,12 @@ class Game:
             r = pygame.Rect(x, y, 260, 360)
             pygame.draw.rect(self.logical, (30, 22, 16), r)
             pygame.draw.rect(self.logical, (200, 170, 90) if cid == self.hover_class else (120, 100, 60), r, 3)
+            portrait = self.bank.first(f"portrait.{cid}")
             idle = self.bank.first(f"char.{cid}.idle")
-            if idle:
-                self.logical.blit(idle, (x + 66, y + 40))
+            face = portrait or idle
+            if face:
+                shown = pygame.transform.scale(face, (128, 128))
+                self.logical.blit(shown, (x + 66, y + 36))
             spec = self.data["classes"][cid]
             self.logical.blit(self.big.render(spec["name"], True, (255, 230, 180)), (x + 40, y + 200))
             self.logical.blit(self.font.render(f"HP {spec['hp']}  {spec['resource']}", True, (220, 200, 160)), (x + 40, y + 250))
@@ -800,8 +905,15 @@ class Game:
                 self.running = False
 
     def present(self) -> None:
-        scaled = pygame.transform.scale(self.logical, self.window.get_size())
-        self.window.blit(scaled, (0, 0))
+        ww, wh = self.window.get_size()
+        scale = max(1, min(ww // VIEW_W, wh // VIEW_H))
+        dw, dh = VIEW_W * scale, VIEW_H * scale
+        self.letter_scale = scale
+        self.letter_ox = (ww - dw) // 2
+        self.letter_oy = (wh - dh) // 2
+        scaled = pygame.transform.scale(self.logical, (dw, dh))
+        self.window.fill((0, 0, 0))
+        self.window.blit(scaled, (self.letter_ox, self.letter_oy))
         pygame.display.flip()
 
     def run(self) -> None:

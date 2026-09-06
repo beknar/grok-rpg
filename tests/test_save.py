@@ -21,13 +21,14 @@ class FakePlayer:
 
 def test_round_trip(tmp_path: Path) -> None:
     path = tmp_path / "slot1.json"
-    state = player_state(FakePlayer(), world_kind="town", world_seed=1337, time=9.5, deaths=2)
+    state = player_state(FakePlayer(), world_kind="town", world_seed=1337, time=9.5, deaths=2, unlocked_acts=["crypt", "cave"])
     write_save(path, state)
     loaded = read_save(path)
-    assert loaded["version"] == 1
     assert loaded["class_id"] == "fighter"
     assert loaded["world_seed"] == 1337
     assert loaded["deaths"] == 2
+    assert loaded["unlocked_acts"] == ["crypt", "cave"]
+    assert loaded["version"] == 2
     assert loaded["player"]["inventory"]["gold"] == 77
     assert loaded["player"]["inventory"]["stacks"]["monster_bone"] == 3
 
@@ -42,3 +43,11 @@ def test_bad_version(tmp_path: Path) -> None:
     write_save(path, {"version": 99})
     with pytest.raises(ValueError):
         read_save(path)
+
+
+def test_v1_migrates(tmp_path: Path) -> None:
+    path = tmp_path / "old.json"
+    write_save(path, {"version": 1, "class_id": "fighter", "player": {"inventory": {"gold": 1, "stacks": {}, "equipped": {}}}})
+    loaded = read_save(path)
+    assert loaded["version"] == 2
+    assert loaded["unlocked_acts"] == ["crypt"]

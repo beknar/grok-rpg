@@ -5,12 +5,15 @@
   "move_right": ["d", "right"],
   "inventory": ["i", "tab"],
   "craft": ["c"],
+  "spellbook": ["b"],
   "interact": ["e"],
-  "skill1": ["1"],
+  "skill1": ["1", "q"],
   "skill2": ["2"],
-  "skill3": ["3"],
-  "skill4": ["4"],
+  "skill3": ["3", "r"],
+  "skill4": ["4", "f"],
   "potion_hp": ["h"],
   "debug": ["f3"],
+  "save": ["f5"],
+  "load": ["f9"],
   "pause": ["escape"]
 }

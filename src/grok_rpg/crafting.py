@@ -5,5 +5,5 @@ from typing import Any
 from grok_rpg.inventory import Inventory
 
 
-def craft_recipe(inv: Inventory, recipe: dict[str, Any]) -> bool:
-    return inv.craft(recipe)
+def craft_recipe(inv: Inventory, recipe: dict[str, Any], items: dict[str, Any] | None = None) -> bool:
+    return inv.craft(recipe, items)
