@@ -1,0 +1,32 @@
+{
+  "fighter": {
+    "name": "Fighter",
+    "resource": "rage",
+    "hp": 140,
+    "resource_max": 100,
+    "speed": 220,
+    "armor": 8,
+    "power": 18,
+    "abilities": ["fighter.slash", "fighter.cleave", "fighter.shield_bash", "fighter.leap"]
+  },
+  "mage": {
+    "name": "Mage",
+    "resource": "mana",
+    "hp": 80,
+    "resource_max": 120,
+    "speed": 200,
+    "armor": 2,
+    "power": 24,
+    "abilities": ["mage.fireball", "mage.ice_nova", "mage.lightning", "mage.blink"]
+  },
+  "cleric": {
+    "name": "Cleric",
+    "resource": "mana",
+    "hp": 110,
+    "resource_max": 100,
+    "speed": 210,
+    "armor": 5,
+    "power": 16,
+    "abilities": ["cleric.smite", "cleric.heal", "cleric.ward", "cleric.consecrate"]
+  }
+}

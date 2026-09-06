@@ -2,6 +2,8 @@
 
 Source of truth for *what* the game is: [AGENTS.md](AGENTS.md) and [README.md](README.md). This file is *how* we build it, in order, without leaving the Diablo loop (kill → loot → sell → craft).
 
+**Progress:** Phases 0–5 landed on `main` (baker, engine, three classes, named monsters, town vendor/craft, HUD/audio). Phase 6 (save/load, juice) is next.
+
 ## Goal (v1 playable)
 
 A top-down orthogonal ARPG at **128×128 art cells**, default view **10×7 tiles (1280×896)** integer-scaled.

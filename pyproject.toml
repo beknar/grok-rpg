@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "grok-rpg"
+version = "0.1.0"
+description = "128x128 pixel-art Diablo-style ARPG"
+requires-python = ">=3.12"
+dependencies = [
+    "pygame==2.6.1",
+    "Pillow==10.2.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest==8.3.4"]
+
+[project.scripts]
+grok-rpg = "grok_rpg.__main__:main"
+bake-assets = "grok_rpg.baker:main"
+
+[tool.setuptools.package-dir]
+"" = "src"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]

@@ -14,13 +14,9 @@ Do **not** generate original character, monster, tile, VFX, or UI art while the 
 
 ## Current status
 
-Documentation only. No game code yet. Implement in this order:
+Playable v1 is in the tree (Phases 1–5 of [PLAN.md](PLAN.md)). Bake assets, then `PYTHONPATH=src python -m grok_rpg`.
 
-1. Asset baker + manifest (128×128 nearest-neighbor bake).
-2. Window, camera, tilemap, player move/attack.
-3. One class, one monster, one loot drop.
-4. Remaining classes, monster roster, vendor, crafting.
-5. HUD, audio, save.
+Still open: save/load, ITS identity sheets, remaining fodder/elites, balance (Phase 6).
 
 ## Stack (already on this machine)
 

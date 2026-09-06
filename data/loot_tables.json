@@ -1,0 +1,33 @@
+{
+  "ghost": [
+    {"item": "ghost_ectoplasm", "chance": 0.8, "qty": [1, 2]},
+    {"item": "mana_potion", "chance": 0.15, "qty": [1, 1]},
+    {"item": "rune_spark", "chance": 0.08, "qty": [1, 1]}
+  ],
+  "salamander": [
+    {"item": "monster_scale", "chance": 0.7, "qty": [1, 2]},
+    {"item": "coal", "chance": 0.5, "qty": [1, 3]},
+    {"item": "ruby", "chance": 0.08, "qty": [1, 1]}
+  ],
+  "enemy_mage": [
+    {"item": "mana_potion", "chance": 0.45, "qty": [1, 1]},
+    {"item": "rune_spark", "chance": 0.25, "qty": [1, 1]},
+    {"item": "coal", "chance": 0.3, "qty": [1, 2]}
+  ],
+  "necromancer": [
+    {"item": "human_skull", "chance": 0.9, "qty": [1, 2]},
+    {"item": "monster_core", "chance": 0.7, "qty": [1, 1]},
+    {"item": "dragon_scale", "chance": 0.12, "qty": [1, 1]},
+    {"item": "ruby", "chance": 0.25, "qty": [1, 1]}
+  ],
+  "beaver": [
+    {"item": "fur_tuft", "chance": 0.8, "qty": [1, 2]},
+    {"item": "bear_paw", "chance": 0.4, "qty": [1, 1]},
+    {"item": "red_meat", "chance": 0.6, "qty": [1, 2]}
+  ],
+  "fodder": [
+    {"item": "monster_bone", "chance": 0.45, "qty": [1, 2]},
+    {"item": "whetstone", "chance": 0.12, "qty": [1, 1]},
+    {"item": "health_potion", "chance": 0.1, "qty": [1, 1]}
+  ]
+}

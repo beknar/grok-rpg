@@ -1,0 +1,22 @@
+{
+  "bone_sword": {
+    "output": "bone_sword",
+    "qty": 1,
+    "inputs": {"monster_bone": 3, "whetstone": 1}
+  },
+  "ember_focus": {
+    "output": "ember_focus",
+    "qty": 1,
+    "inputs": {"coal": 2, "ruby": 1}
+  },
+  "holy_symbol": {
+    "output": "holy_symbol",
+    "qty": 1,
+    "inputs": {"ghost_ectoplasm": 2, "rune_spark": 1}
+  },
+  "scale_mail": {
+    "output": "scale_mail",
+    "qty": 1,
+    "inputs": {"dragon_scale": 1, "ruby": 1, "rune_spark": 1}
+  }
+}

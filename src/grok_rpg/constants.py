@@ -1,0 +1,11 @@
+from __future__ import annotations
+
+TILE = 128
+VIEW_TILES = (10, 7)
+VIEW_W = TILE * VIEW_TILES[0]
+VIEW_H = TILE * VIEW_TILES[1]
+FPS = 60
+HITBOX = 40
+LOOT_MAGNET = 56
+PLAYER_SPEED = 220.0
+CELL = 128

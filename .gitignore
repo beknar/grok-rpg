@@ -11,6 +11,9 @@ __pycache__/
 # Baked third-party art (source is the local RPG Creator Bundle)
 assets/baked/
 
+# Local saves
+saves/
+
 # Env / secrets
 .env
 .env.*

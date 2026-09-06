@@ -1,0 +1,1261 @@
+[
+  {
+    "id": "char.fighter.idle",
+    "category": "characters/fighter",
+    "source": "pixel art rpg top down characters/Pixel Art Top-Down RPG Characters - AfGameAssets - V2 Walking 4 Directions/Viking/VikingIdle.png",
+    "op": "strip_v",
+    "fps": 10,
+    "loop": true,
+    "scale_to": 128
+  },
+  {
+    "id": "char.fighter.walk_down",
+    "category": "characters/fighter",
+    "source": "pixel art rpg top down characters/Pixel Art Top-Down RPG Characters - AfGameAssets - V2 Walking 4 Directions/Viking/Viking_Walk_Down.png",
+    "op": "strip_v",
+    "fps": 10,
+    "loop": true,
+    "scale_to": 128
+  },
+  {
+    "id": "char.fighter.walk_left",
+    "category": "characters/fighter",
+    "source": "pixel art rpg top down characters/Pixel Art Top-Down RPG Characters - AfGameAssets - V2 Walking 4 Directions/Viking/Viking_Walk_Left.png",
+    "op": "strip_v",
+    "fps": 10,
+    "loop": true,
+    "scale_to": 128
+  },
+  {
+    "id": "char.fighter.walk_right",
+    "category": "characters/fighter",
+    "source": "pixel art rpg top down characters/Pixel Art Top-Down RPG Characters - AfGameAssets - V2 Walking 4 Directions/Viking/Viking_Walk_Right.png",
+    "op": "strip_v",
+    "fps": 10,
+    "loop": true,
+    "scale_to": 128
+  },
+  {
+    "id": "char.fighter.walk_up",
+    "category": "characters/fighter",
+    "source": "pixel art rpg top down characters/Pixel Art Top-Down RPG Characters - AfGameAssets - V2 Walking 4 Directions/Viking/Viking_Walk_Up.png",
+    "op": "strip_v",
+    "fps": 10,
+    "loop": true,
+    "scale_to": 128
+  },
+  {
+    "id": "char.fighter.attack",
+    "category": "characters/fighter",
+    "source": "pixel art rpg top down characters/Pixel Art Top-Down RPG Characters - AfGameAssets - V2 Walking 4 Directions/Viking/Viking_Attack_01.png",
+    "op": "strip_v",
+    "fps": 14,
+    "loop": false,
+    "scale_to": 128
+  },
+  {
+    "id": "char.fighter.dead",
+    "category": "characters/fighter",
+    "source": "pixel art rpg top down characters/Pixel Art Top-Down RPG Characters - AfGameAssets - V2 Walking 4 Directions/Viking/VikingDead.png",
+    "op": "strip_v",
+    "fps": 14,
+    "loop": false,
+    "scale_to": 128
+  },
+  {
+    "id": "char.fighter.hit",
+    "category": "characters/fighter",
+    "source": "pixel art rpg top down characters/Pixel Art Top-Down RPG Characters - AfGameAssets - V2 Walking 4 Directions/Viking/VikingAttacked.png",
+    "op": "strip_v",
+    "fps": 14,
+    "loop": true,
+    "scale_to": 128
+  },
+  {
+    "id": "char.mage.idle",
+    "category": "characters/mage",
+    "source": "pixel art rpg top down characters/Pixel Art Top-Down RPG Characters - AfGameAssets - V2 Walking 4 Directions/BloodMage/BloodMage_Idle.png",
+    "op": "strip_v",
+    "fps": 10,
+    "loop": true,
+    "scale_to": 128
+  },
+  {
+    "id": "char.mage.walk_down",
+    "category": "characters/mage",
+    "source": "pixel art rpg top down characters/Pixel Art Top-Down RPG Characters - AfGameAssets - V2 Walking 4 Directions/BloodMage/BloodMage_Walking_Down.png",
+    "op": "strip_v",
+    "fps": 10,
+    "loop": true,
+    "scale_to": 128
+  },
+  {
+    "id": "char.mage.walk_left",
+    "category": "characters/mage",
+    "source": "pixel art rpg top down characters/Pixel Art Top-Down RPG Characters - AfGameAssets - V2 Walking 4 Directions/BloodMage/BloodMage_Walking_Side_Left.png",
+    "op": "strip_v",
+    "fps": 10,
+    "loop": true,
+    "scale_to": 128
+  },
+  {
+    "id": "char.mage.walk_right",
+    "category": "characters/mage",
+    "source": "pixel art rpg top down characters/Pixel Art Top-Down RPG Characters - AfGameAssets - V2 Walking 4 Directions/BloodMage/BloodMage_Walking_Side_Right.png",
+    "op": "strip_v",
+    "fps": 10,
+    "loop": true,
+    "scale_to": 128
+  },
+  {
+    "id": "char.mage.walk_up",
+    "category": "characters/mage",
+    "source": "pixel art rpg top down characters/Pixel Art Top-Down RPG Characters - AfGameAssets - V2 Walking 4 Directions/BloodMage/BloodMage_Walking_Up.png",
+    "op": "strip_v",
+    "fps": 10,
+    "loop": true,
+    "scale_to": 128
+  },
+  {
+    "id": "char.mage.attack",
+    "category": "characters/mage",
+    "source": "pixel art rpg top down characters/Pixel Art Top-Down RPG Characters - AfGameAssets - V2 Walking 4 Directions/BloodMage/BloodMage_Attack_01.png",
+    "op": "strip_v",
+    "fps": 10,
+    "loop": false,
+    "scale_to": 128
+  },
+  {
+    "id": "char.mage.dead",
+    "category": "characters/mage",
+    "source": "pixel art rpg top down characters/Pixel Art Top-Down RPG Characters - AfGameAssets - V2 Walking 4 Directions/BloodMage/BloodMage_Dead.png",
+    "op": "strip_v",
+    "fps": 10,
+    "loop": false,
+    "scale_to": 128
+  },
+  {
+    "id": "char.mage.charge",
+    "category": "characters/mage",
+    "source": "pixel art rpg top down characters/Pixel Art Top-Down RPG Characters - AfGameAssets - V2 Walking 4 Directions/BloodMage/Effect_BloodBubble.png",
+    "op": "strip_v",
+    "fps": 10,
+    "loop": true,
+    "scale_to": 128
+  },
+  {
+    "id": "char.cleric.idle",
+    "category": "characters/cleric",
+    "source": "pixel art rpg top down characters/Pixel Art Top-Down RPG Characters - AfGameAssets - V2 Walking 4 Directions/Druid/Druid_Idle.png",
+    "op": "strip_v",
+    "fps": 10,
+    "loop": true,
+    "scale_to": 128,
+    "frame": 32
+  },
+  {
+    "id": "char.cleric.walk_down",
+    "category": "characters/cleric",
+    "source": "pixel art rpg top down characters/Pixel Art Top-Down RPG Characters - AfGameAssets - V2 Walking 4 Directions/Druid/Druid_Walk_Down.png",
+    "op": "strip_v",
+    "fps": 10,
+    "loop": true,
+    "scale_to": 128,
+    "frame": 32
+  },
+  {
+    "id": "char.cleric.walk_left",
+    "category": "characters/cleric",
+    "source": "pixel art rpg top down characters/Pixel Art Top-Down RPG Characters - AfGameAssets - V2 Walking 4 Directions/Druid/Druid_Walk_Left.png",
+    "op": "strip_v",
+    "fps": 10,
+    "loop": true,
+    "scale_to": 128,
+    "frame": 32
+  },
+  {
+    "id": "char.cleric.walk_right",
+    "category": "characters/cleric",
+    "source": "pixel art rpg top down characters/Pixel Art Top-Down RPG Characters - AfGameAssets - V2 Walking 4 Directions/Druid/Druid_Walk_Right.png",
+    "op": "strip_v",
+    "fps": 10,
+    "loop": true,
+    "scale_to": 128,
+    "frame": 32
+  },
+  {
+    "id": "char.cleric.walk_up",
+    "category": "characters/cleric",
+    "source": "pixel art rpg top down characters/Pixel Art Top-Down RPG Characters - AfGameAssets - V2 Walking 4 Directions/Druid/Druid_Walk_Up.png",
+    "op": "strip_v",
+    "fps": 10,
+    "loop": true,
+    "scale_to": 128,
+    "frame": 32
+  },
+  {
+    "id": "char.cleric.attack",
+    "category": "characters/cleric",
+    "source": "pixel art rpg top down characters/Pixel Art Top-Down RPG Characters - AfGameAssets - V2 Walking 4 Directions/Druid/Druid_Attack_01.png",
+    "op": "strip_v",
+    "fps": 10,
+    "loop": false,
+    "scale_to": 128,
+    "frame": 64
+  },
+  {
+    "id": "char.cleric.dead",
+    "category": "characters/cleric",
+    "source": "pixel art rpg top down characters/Pixel Art Top-Down RPG Characters - AfGameAssets - V2 Walking 4 Directions/Druid/Druid_Dead.png",
+    "op": "strip_v",
+    "fps": 10,
+    "loop": false,
+    "scale_to": 128,
+    "frame": 64
+  },
+  {
+    "id": "char.cleric.heal_fx",
+    "category": "characters/cleric",
+    "source": "pixel art rpg top down characters/Pixel Art Top-Down RPG Characters - AfGameAssets - V2 Walking 4 Directions/Druid/Effect_Heal_Poison.png",
+    "op": "strip_h",
+    "frame": 64,
+    "fps": 10,
+    "loop": false,
+    "scale_to": 128
+  },
+  {
+    "id": "mon.undead_ghost.idle",
+    "category": "monsters/undead_ghost",
+    "source": "pixel art rpg top down enemies/Pixel Art Top-Down RPG Enemies - AfGameAssets - V2 - Walking/Ghost/Ghost_Idle.png",
+    "op": "strip_v",
+    "fps": 10,
+    "loop": true,
+    "scale_to": 128
+  },
+  {
+    "id": "mon.undead_ghost.walk",
+    "category": "monsters/undead_ghost",
+    "source": "pixel art rpg top down enemies/Pixel Art Top-Down RPG Enemies - AfGameAssets - V2 - Walking/Ghost/Ghost_Walk.png",
+    "op": "strip_v",
+    "fps": 10,
+    "loop": true,
+    "scale_to": 128
+  },
+  {
+    "id": "mon.undead_ghost.attack",
+    "category": "monsters/undead_ghost",
+    "source": "pixel art rpg top down enemies/Pixel Art Top-Down RPG Enemies - AfGameAssets - V2 - Walking/Ghost/Ghost_Attack.png",
+    "op": "strip_v",
+    "fps": 10,
+    "loop": false,
+    "scale_to": 128
+  },
+  {
+    "id": "mon.undead_ghost.hit",
+    "category": "monsters/undead_ghost",
+    "source": "pixel art rpg top down enemies/Pixel Art Top-Down RPG Enemies - AfGameAssets - V2 - Walking/Ghost/Ghost_Hit.png",
+    "op": "strip_v",
+    "fps": 10,
+    "loop": false,
+    "scale_to": 128
+  },
+  {
+    "id": "mon.undead_ghost.dead",
+    "category": "monsters/undead_ghost",
+    "source": "pixel art rpg top down enemies/Pixel Art Top-Down RPG Enemies - AfGameAssets - V2 - Walking/Ghost/Ghost_Dead.png",
+    "op": "strip_v",
+    "fps": 10,
+    "loop": false,
+    "scale_to": 128
+  },
+  {
+    "id": "mon.elemental_salamander.idle",
+    "category": "monsters/elemental_salamander",
+    "source": "pixel art rpg top down enemies/Pixel Art Top-Down RPG Enemies - AfGameAssets - V2 - Walking/Salamander/Salamander_Idle.png",
+    "op": "strip_v",
+    "fps": 10,
+    "loop": true,
+    "scale_to": 128
+  },
+  {
+    "id": "mon.elemental_salamander.walk",
+    "category": "monsters/elemental_salamander",
+    "source": "pixel art rpg top down enemies/Pixel Art Top-Down RPG Enemies - AfGameAssets - V2 - Walking/Salamander/Salamander_Walk.png",
+    "op": "strip_v",
+    "fps": 10,
+    "loop": true,
+    "scale_to": 128
+  },
+  {
+    "id": "mon.elemental_salamander.attack",
+    "category": "monsters/elemental_salamander",
+    "source": "pixel art rpg top down enemies/Pixel Art Top-Down RPG Enemies - AfGameAssets - V2 - Walking/Salamander/Salamander_Attack.png",
+    "op": "strip_v",
+    "fps": 10,
+    "loop": false,
+    "scale_to": 128
+  },
+  {
+    "id": "mon.elemental_salamander.hit",
+    "category": "monsters/elemental_salamander",
+    "source": "pixel art rpg top down enemies/Pixel Art Top-Down RPG Enemies - AfGameAssets - V2 - Walking/Salamander/Salamander_Hit.png",
+    "op": "strip_v",
+    "fps": 10,
+    "loop": false,
+    "scale_to": 128
+  },
+  {
+    "id": "mon.elemental_salamander.dead",
+    "category": "monsters/elemental_salamander",
+    "source": "pixel art rpg top down enemies/Pixel Art Top-Down RPG Enemies - AfGameAssets - V2 - Walking/Salamander/Salamander_Dead.png",
+    "op": "strip_v",
+    "fps": 10,
+    "loop": false,
+    "scale_to": 128
+  },
+  {
+    "id": "mon.enemy_mage.idle",
+    "category": "monsters/enemy_mage",
+    "source": "pixel art rpg top down enemies/Pixel Art Top-Down RPG Enemies - AfGameAssets - V2 - Walking/Mage/Mage_Idle.png",
+    "op": "strip_v",
+    "fps": 10,
+    "loop": true,
+    "scale_to": 128
+  },
+  {
+    "id": "mon.enemy_mage.walk",
+    "category": "monsters/enemy_mage",
+    "source": "pixel art rpg top down enemies/Pixel Art Top-Down RPG Enemies - AfGameAssets - V2 - Walking/Mage/Mage_Walk.png",
+    "op": "strip_v",
+    "fps": 10,
+    "loop": true,
+    "scale_to": 128
+  },
+  {
+    "id": "mon.enemy_mage.attack",
+    "category": "monsters/enemy_mage",
+    "source": "pixel art rpg top down enemies/Pixel Art Top-Down RPG Enemies - AfGameAssets - V2 - Walking/Mage/Mage_Attack.png",
+    "op": "strip_v",
+    "fps": 10,
+    "loop": false,
+    "scale_to": 128
+  },
+  {
+    "id": "mon.enemy_mage.hit",
+    "category": "monsters/enemy_mage",
+    "source": "pixel art rpg top down enemies/Pixel Art Top-Down RPG Enemies - AfGameAssets - V2 - Walking/Mage/Mage_Hit.png",
+    "op": "strip_v",
+    "fps": 10,
+    "loop": false,
+    "scale_to": 128
+  },
+  {
+    "id": "mon.enemy_mage.dead",
+    "category": "monsters/enemy_mage",
+    "source": "pixel art rpg top down enemies/Pixel Art Top-Down RPG Enemies - AfGameAssets - V2 - Walking/Mage/Mage_Dead.png",
+    "op": "strip_v",
+    "fps": 10,
+    "loop": false,
+    "scale_to": 128
+  },
+  {
+    "id": "mon.necromancer.idle",
+    "category": "monsters/necromancer",
+    "source": "pixel art rpg top down enemies/Pixel Art Top-Down RPG Enemies - AfGameAssets - V2 - Walking/Necromancer/Necromancer_Switch_Idle.png",
+    "op": "strip_v",
+    "fps": 10,
+    "loop": true,
+    "scale_to": 128
+  },
+  {
+    "id": "mon.necromancer.walk",
+    "category": "monsters/necromancer",
+    "source": "pixel art rpg top down enemies/Pixel Art Top-Down RPG Enemies - AfGameAssets - V2 - Walking/Necromancer/Necromancer_Walk.png",
+    "op": "strip_v",
+    "fps": 10,
+    "loop": true,
+    "scale_to": 128
+  },
+  {
+    "id": "mon.necromancer.attack",
+    "category": "monsters/necromancer",
+    "source": "pixel art rpg top down enemies/Pixel Art Top-Down RPG Enemies - AfGameAssets - V2 - Walking/Necromancer/Necromancer_Attack.png",
+    "op": "strip_v",
+    "fps": 10,
+    "loop": false,
+    "scale_to": 128
+  },
+  {
+    "id": "mon.necromancer.hit",
+    "category": "monsters/necromancer",
+    "source": "pixel art rpg top down enemies/Pixel Art Top-Down RPG Enemies - AfGameAssets - V2 - Walking/Necromancer/Necromancer_Hit.png",
+    "op": "strip_v",
+    "fps": 10,
+    "loop": false,
+    "scale_to": 128
+  },
+  {
+    "id": "mon.beast_beaver.idle",
+    "category": "monsters/beast_beaver",
+    "source": "pixel art rpg top down enemies/Pixel Art Top-Down RPG Enemies - AfGameAssets - V2 - Walking/Beaver/Beaver_Walk.png",
+    "op": "strip_v",
+    "fps": 10,
+    "loop": true,
+    "scale_to": 128
+  },
+  {
+    "id": "mon.beast_beaver.walk",
+    "category": "monsters/beast_beaver",
+    "source": "pixel art rpg top down enemies/Pixel Art Top-Down RPG Enemies - AfGameAssets - V2 - Walking/Beaver/Beaver_Walk.png",
+    "op": "strip_v",
+    "fps": 10,
+    "loop": true,
+    "scale_to": 128
+  },
+  {
+    "id": "mon.beast_beaver.attack",
+    "category": "monsters/beast_beaver",
+    "source": "pixel art rpg top down enemies/Pixel Art Top-Down RPG Enemies - AfGameAssets - V2 - Walking/Beaver/Beaver_Attack_Idle.png",
+    "op": "strip_v",
+    "fps": 10,
+    "loop": false,
+    "scale_to": 128
+  },
+  {
+    "id": "mon.beast_beaver.hit",
+    "category": "monsters/beast_beaver",
+    "source": "pixel art rpg top down enemies/Pixel Art Top-Down RPG Enemies - AfGameAssets - V2 - Walking/Beaver/Beaver_Hit.png",
+    "op": "strip_v",
+    "fps": 10,
+    "loop": false,
+    "scale_to": 128
+  },
+  {
+    "id": "mon.beast_beaver.dead",
+    "category": "monsters/beast_beaver",
+    "source": "pixel art rpg top down enemies/Pixel Art Top-Down RPG Enemies - AfGameAssets - V2 - Walking/Beaver/Beaver_Dead.png",
+    "op": "strip_v",
+    "fps": 10,
+    "loop": false,
+    "scale_to": 128
+  },
+  {
+    "id": "mon.dungeon_minion_01.idle",
+    "category": "monsters/minion_01",
+    "source": "pixel rpg dungeons monsters/(INDIVIDUAL MONSTERS) v1.3/Monster_01/png_spritesheet/spr_pixel_mini_dungeon_monster_01-Sheet.png",
+    "op": "strip_h",
+    "frame": 16,
+    "fps": 6,
+    "loop": true,
+    "scale_to": 128
+  },
+  {
+    "id": "mon.dungeon_minion_02.idle",
+    "category": "monsters/minion_02",
+    "source": "pixel rpg dungeons monsters/(INDIVIDUAL MONSTERS) v1.3/Monster_02/png_spritesheet/spr_pixel_mini_dungeon_monster_02-Sheet.png",
+    "op": "strip_h",
+    "frame": 16,
+    "fps": 6,
+    "loop": true,
+    "scale_to": 128
+  },
+  {
+    "id": "mon.dungeon_minion_03.idle",
+    "category": "monsters/minion_03",
+    "source": "pixel rpg dungeons monsters/(INDIVIDUAL MONSTERS) v1.3/Monster_03/png_spritesheet/spr_pixel_mini_dungeon_monster_03-Sheet.png",
+    "op": "strip_h",
+    "frame": 16,
+    "fps": 6,
+    "loop": true,
+    "scale_to": 128
+  },
+  {
+    "id": "vfx.slash",
+    "category": "vfx",
+    "source": "pixel art rpg vfx/Pixel Art RPG VFX - AfGameAssets - V3/Attack Slash/Slash_attack_001.png",
+    "op": "strip_v",
+    "fps": 12,
+    "loop": false,
+    "scale_to": 128
+  },
+  {
+    "id": "vfx.slash2",
+    "category": "vfx",
+    "source": "pixel art rpg vfx/Pixel Art RPG VFX - AfGameAssets - V3/Attack Slash/Slash_attack_002.png",
+    "op": "strip_v",
+    "fps": 12,
+    "loop": false,
+    "scale_to": 128
+  },
+  {
+    "id": "vfx.slash3",
+    "category": "vfx",
+    "source": "pixel art rpg vfx/Pixel Art RPG VFX - AfGameAssets - V3/Attack Slash/Slash_attack_003.png",
+    "op": "strip_v",
+    "fps": 12,
+    "loop": false,
+    "scale_to": 128
+  },
+  {
+    "id": "vfx.fireball",
+    "category": "vfx",
+    "source": "pixel art rpg vfx/Pixel Art RPG VFX - AfGameAssets - V3/Fire/FireBall.png",
+    "op": "strip_v",
+    "fps": 12,
+    "loop": false,
+    "scale_to": 128
+  },
+  {
+    "id": "vfx.fire_explode",
+    "category": "vfx",
+    "source": "pixel art rpg vfx/Pixel Art RPG VFX - AfGameAssets - V3/Fire/FireExplosion1.png",
+    "op": "strip_v",
+    "fps": 12,
+    "loop": false,
+    "scale_to": 128
+  },
+  {
+    "id": "vfx.ice_spike",
+    "category": "vfx",
+    "source": "pixel art rpg vfx/Pixel Art RPG VFX - AfGameAssets - V3/Ice/IceSpike.png",
+    "op": "strip_v",
+    "fps": 12,
+    "loop": false,
+    "scale_to": 128
+  },
+  {
+    "id": "vfx.ice_slam",
+    "category": "vfx",
+    "source": "pixel art rpg vfx/Pixel Art RPG VFX - AfGameAssets - V3/Ice/IceSlam.png",
+    "op": "strip_v",
+    "fps": 12,
+    "loop": false,
+    "scale_to": 128
+  },
+  {
+    "id": "vfx.lightning",
+    "category": "vfx",
+    "source": "pixel art rpg vfx/Pixel Art RPG VFX - AfGameAssets - V3/Electricity/ElectricLighting1.png",
+    "op": "strip_v",
+    "fps": 12,
+    "loop": false,
+    "scale_to": 128
+  },
+  {
+    "id": "vfx.electric_ball",
+    "category": "vfx",
+    "source": "pixel art rpg vfx/Pixel Art RPG VFX - AfGameAssets - V3/Electricity/ElectricBall.png",
+    "op": "strip_v",
+    "fps": 12,
+    "loop": false,
+    "scale_to": 128
+  },
+  {
+    "id": "vfx.holy_slash",
+    "category": "vfx",
+    "source": "pixel art rpg vfx/Pixel Art RPG VFX - AfGameAssets - V3/Holy/HolySlash.png",
+    "op": "strip_v",
+    "fps": 12,
+    "loop": false,
+    "scale_to": 128
+  },
+  {
+    "id": "vfx.holy_bless",
+    "category": "vfx",
+    "source": "pixel art rpg vfx/Pixel Art RPG VFX - AfGameAssets - V3/Holy/HolyBlessing.png",
+    "op": "strip_v",
+    "fps": 12,
+    "loop": false,
+    "scale_to": 128
+  },
+  {
+    "id": "vfx.holy_shield",
+    "category": "vfx",
+    "source": "pixel art rpg vfx/Pixel Art RPG VFX - AfGameAssets - V3/Holy/HolyShield.png",
+    "op": "strip_v",
+    "fps": 12,
+    "loop": false,
+    "scale_to": 128
+  },
+  {
+    "id": "vfx.holy_cross",
+    "category": "vfx",
+    "source": "pixel art rpg vfx/Pixel Art RPG VFX - AfGameAssets - V3/Holy/HolyCross.png",
+    "op": "strip_v",
+    "fps": 12,
+    "loop": false,
+    "scale_to": 128
+  },
+  {
+    "id": "vfx.void_portal",
+    "category": "vfx",
+    "source": "pixel art rpg vfx/Pixel Art RPG VFX - AfGameAssets - V3/Void/VoidPortal.png",
+    "op": "strip_v",
+    "fps": 12,
+    "loop": false,
+    "scale_to": 128
+  },
+  {
+    "id": "vfx.earth_shield",
+    "category": "vfx",
+    "source": "pixel art rpg vfx/Pixel Art RPG VFX - AfGameAssets - V3/Earth/EarthShield.png",
+    "op": "strip_v",
+    "fps": 12,
+    "loop": false,
+    "scale_to": 128
+  },
+  {
+    "id": "vfx.earth_spin",
+    "category": "vfx",
+    "source": "pixel art rpg vfx/Pixel Art RPG VFX - AfGameAssets - V3/Earth/EarthSpin.png",
+    "op": "strip_v",
+    "fps": 12,
+    "loop": false,
+    "scale_to": 128
+  },
+  {
+    "id": "vfx.earth_grow",
+    "category": "vfx",
+    "source": "pixel art rpg vfx/Pixel Art RPG VFX - AfGameAssets - V3/Earth/EarthGrow.png",
+    "op": "strip_v",
+    "fps": 12,
+    "loop": false,
+    "scale_to": 128
+  },
+  {
+    "id": "vfx.earth_heal",
+    "category": "vfx",
+    "source": "pixel art rpg vfx/Pixel Art RPG VFX - AfGameAssets - V3/Earth/EarthHeal.png",
+    "op": "strip_v",
+    "fps": 12,
+    "loop": false,
+    "scale_to": 128
+  },
+  {
+    "id": "vfx.wind_slash",
+    "category": "vfx",
+    "source": "pixel art rpg vfx/Pixel Art RPG VFX - AfGameAssets - V3/Wind/WindSlash.png",
+    "op": "strip_v",
+    "fps": 12,
+    "loop": false,
+    "scale_to": 128
+  },
+  {
+    "id": "vfx.explosion",
+    "category": "vfx",
+    "source": "pixel art rpg vfx/Pixel Art RPG VFX - AfGameAssets - V3/Explosion/Explosion_01.png",
+    "op": "strip_v",
+    "fps": 12,
+    "loop": false,
+    "scale_to": 128
+  },
+  {
+    "id": "vfx.fire_slash",
+    "category": "vfx",
+    "source": "pixel art rpg vfx/Pixel Art RPG VFX - AfGameAssets - V3/Fire/FireSlash.png",
+    "op": "strip_v",
+    "fps": 12,
+    "loop": false,
+    "scale_to": 128
+  },
+  {
+    "id": "vfx.void_slash",
+    "category": "vfx",
+    "source": "pixel art rpg vfx/Pixel Art RPG VFX - AfGameAssets - V3/Void/VoidSlash.png",
+    "op": "strip_v",
+    "fps": 12,
+    "loop": false,
+    "scale_to": 128
+  },
+  {
+    "id": "tile.palette",
+    "category": "tiles",
+    "source": "beowulfs rpg dungeon tilesets/Beowulf_Mini_Dungeons_v 2.1/( MINI DUNGEON TILESET )/(Tileset)/(FULL)TILESET_MINI_DUNGEONS.png",
+    "op": "grid_cells",
+    "cell": 16,
+    "cells": [
+      [
+        64,
+        3
+      ],
+      [
+        65,
+        3
+      ],
+      [
+        70,
+        3
+      ],
+      [
+        81,
+        3
+      ],
+      [
+        75,
+        3
+      ],
+      [
+        5,
+        23
+      ],
+      [
+        8,
+        23
+      ],
+      [
+        12,
+        24
+      ],
+      [
+        16,
+        24
+      ],
+      [
+        70,
+        7
+      ],
+      [
+        77,
+        9
+      ],
+      [
+        64,
+        9
+      ]
+    ],
+    "fps": 0,
+    "loop": false,
+    "scale_to": 128
+  },
+  {
+    "id": "item.ghost_ectoplasm",
+    "category": "icons/loot",
+    "source": "beowulfs rpg monster loots/Beowulf_RPG_Monsters_Loot/monster_loots_size_128x128/monloot_16_ghost_ectoplasm_xxx.png",
+    "op": "copy",
+    "scale_to": 128,
+    "fps": 0,
+    "loop": false
+  },
+  {
+    "id": "item.red_meat",
+    "category": "icons/loot",
+    "source": "beowulfs rpg monster loots/Beowulf_RPG_Monsters_Loot/monster_loots_size_128x128/monloot_11_red_meat_xxx.png",
+    "op": "copy",
+    "scale_to": 128,
+    "fps": 0,
+    "loop": false
+  },
+  {
+    "id": "item.fur_tuft",
+    "category": "icons/loot",
+    "source": "beowulfs rpg monster loots/Beowulf_RPG_Monsters_Loot/monster_loots_size_128x128/monloot_33_fur_tuft_xxx.png",
+    "op": "copy",
+    "scale_to": 128,
+    "fps": 0,
+    "loop": false
+  },
+  {
+    "id": "item.monster_bone",
+    "category": "icons/loot",
+    "source": "beowulfs rpg monster loots/Beowulf_RPG_Monsters_Loot/monster_loots_size_128x128/monloot_28_monster_bone_xxx.png",
+    "op": "copy",
+    "scale_to": 128,
+    "fps": 0,
+    "loop": false
+  },
+  {
+    "id": "item.monster_scale",
+    "category": "icons/loot",
+    "source": "beowulfs rpg monster loots/Beowulf_RPG_Monsters_Loot/monster_loots_size_128x128/monloot_40_monster_scale_xxx.png",
+    "op": "copy",
+    "scale_to": 128,
+    "fps": 0,
+    "loop": false
+  },
+  {
+    "id": "item.coal",
+    "category": "icons/loot",
+    "source": "beowulfs rpg monster loots/Beowulf_RPG_Monsters_Loot/monster_loots_size_128x128/monloot_44_coal_xxx.png",
+    "op": "copy",
+    "scale_to": 128,
+    "fps": 0,
+    "loop": false
+  },
+  {
+    "id": "item.human_skull",
+    "category": "icons/loot",
+    "source": "beowulfs rpg monster loots/Beowulf_RPG_Monsters_Loot/monster_loots_size_128x128/monloot_31_human_skull_xxx.png",
+    "op": "copy",
+    "scale_to": 128,
+    "fps": 0,
+    "loop": false
+  },
+  {
+    "id": "item.monster_core",
+    "category": "icons/loot",
+    "source": "beowulfs rpg monster loots/Beowulf_RPG_Monsters_Loot/monster_loots_size_128x128/monloot_26_monster_core_xxx.png",
+    "op": "copy",
+    "scale_to": 128,
+    "fps": 0,
+    "loop": false
+  },
+  {
+    "id": "item.whetstone",
+    "category": "icons/loot",
+    "source": "beowulfs rpg monster loots/Beowulf_RPG_Monsters_Loot/monster_loots_size_128x128/monloot_45_whetstone_xxx.png",
+    "op": "copy",
+    "scale_to": 128,
+    "fps": 0,
+    "loop": false
+  },
+  {
+    "id": "item.ruby",
+    "category": "icons/loot",
+    "source": "beowulfs rpg monster loots/Beowulf_RPG_Monsters_Loot/monster_loots_size_128x128/monloot_50_ruby_xxx.png",
+    "op": "copy",
+    "scale_to": 128,
+    "fps": 0,
+    "loop": false
+  },
+  {
+    "id": "item.health_potion",
+    "category": "icons/loot",
+    "source": "beowulfs rpg monster loots/Beowulf_RPG_Monsters_Loot/monster_loots_size_128x128/monloot_88_health_potion_xxx.png",
+    "op": "copy",
+    "scale_to": 128,
+    "fps": 0,
+    "loop": false
+  },
+  {
+    "id": "item.mana_potion",
+    "category": "icons/loot",
+    "source": "beowulfs rpg monster loots/Beowulf_RPG_Monsters_Loot/monster_loots_size_128x128/monloot_87_mana_potion_xxx.png",
+    "op": "copy",
+    "scale_to": 128,
+    "fps": 0,
+    "loop": false
+  },
+  {
+    "id": "item.dragon_scale",
+    "category": "icons/loot",
+    "source": "beowulfs rpg monster loots/Beowulf_RPG_Monsters_Loot/monster_loots_size_128x128/monloot_17_dragon_scale_xxx.png",
+    "op": "copy",
+    "scale_to": 128,
+    "fps": 0,
+    "loop": false
+  },
+  {
+    "id": "item.bear_paw",
+    "category": "icons/loot",
+    "source": "beowulfs rpg monster loots/Beowulf_RPG_Monsters_Loot/monster_loots_size_128x128/monloot_37_bear_paw_xxx.png",
+    "op": "copy",
+    "scale_to": 128,
+    "fps": 0,
+    "loop": false
+  },
+  {
+    "id": "icon.skill_attack",
+    "category": "icons/skills",
+    "source": "2d minimal skill icons/Round/128/Skill_Attack.png",
+    "op": "copy",
+    "scale_to": 128,
+    "fps": 0,
+    "loop": false
+  },
+  {
+    "id": "icon.skill_precision",
+    "category": "icons/skills",
+    "source": "2d minimal skill icons/Round/128/Skill_Precision-Strike.png",
+    "op": "copy",
+    "scale_to": 128,
+    "fps": 0,
+    "loop": false
+  },
+  {
+    "id": "icon.skill_stone",
+    "category": "icons/skills",
+    "source": "2d minimal skill icons/Round/128/Skill_Stone.png",
+    "op": "copy",
+    "scale_to": 128,
+    "fps": 0,
+    "loop": false
+  },
+  {
+    "id": "icon.skill_rush",
+    "category": "icons/skills",
+    "source": "2d minimal skill icons/Round/128/Skill_Rabbit_Rush.png",
+    "op": "copy",
+    "scale_to": 128,
+    "fps": 0,
+    "loop": false
+  },
+  {
+    "id": "icon.skill_meteor",
+    "category": "icons/skills",
+    "source": "2d minimal skill icons/Round/128/Skill_Meteor.png",
+    "op": "copy",
+    "scale_to": 128,
+    "fps": 0,
+    "loop": false
+  },
+  {
+    "id": "icon.skill_ice",
+    "category": "icons/skills",
+    "source": "2d minimal skill icons/Round/128/Skill_Ice.png",
+    "op": "copy",
+    "scale_to": 128,
+    "fps": 0,
+    "loop": false
+  },
+  {
+    "id": "icon.skill_lightning",
+    "category": "icons/skills",
+    "source": "2d minimal skill icons/Round/128/Skill_Lightning.png",
+    "op": "copy",
+    "scale_to": 128,
+    "fps": 0,
+    "loop": false
+  },
+  {
+    "id": "icon.skill_blackhole",
+    "category": "icons/skills",
+    "source": "2d minimal skill icons/Round/128/Skill_Blackhole.png",
+    "op": "copy",
+    "scale_to": 128,
+    "fps": 0,
+    "loop": false
+  },
+  {
+    "id": "icon.skill_heaven",
+    "category": "icons/skills",
+    "source": "2d minimal skill icons/Round/128/Skill_Heaven.png",
+    "op": "copy",
+    "scale_to": 128,
+    "fps": 0,
+    "loop": false
+  },
+  {
+    "id": "icon.skill_heal",
+    "category": "icons/skills",
+    "source": "2d minimal skill icons/Round/128/Skill_Heal.png",
+    "op": "copy",
+    "scale_to": 128,
+    "fps": 0,
+    "loop": false
+  },
+  {
+    "id": "icon.skill_vaccine",
+    "category": "icons/skills",
+    "source": "2d minimal skill icons/Round/128/Skill_Vaccine.png",
+    "op": "copy",
+    "scale_to": 128,
+    "fps": 0,
+    "loop": false
+  },
+  {
+    "id": "icon.skill_gold",
+    "category": "icons/skills",
+    "source": "2d minimal skill icons/Round/128/Skill_Gold.png",
+    "op": "copy",
+    "scale_to": 128,
+    "fps": 0,
+    "loop": false
+  },
+  {
+    "id": "icon.skill_health_up",
+    "category": "icons/skills",
+    "source": "2d minimal skill icons/Round/128/Skill_Health_Up.png",
+    "op": "copy",
+    "scale_to": 128,
+    "fps": 0,
+    "loop": false
+  },
+  {
+    "id": "icon.fire",
+    "category": "icons/skills",
+    "source": "spells and ability icons_windows/png/128x128/1_fire_1.png",
+    "op": "copy",
+    "scale_to": 128,
+    "fps": 0,
+    "loop": false
+  },
+  {
+    "id": "icon.ice",
+    "category": "icons/skills",
+    "source": "spells and ability icons_windows/png/128x128/1_ice_1.png",
+    "op": "copy",
+    "scale_to": 128,
+    "fps": 0,
+    "loop": false
+  },
+  {
+    "id": "icon.lightning",
+    "category": "icons/skills",
+    "source": "spells and ability icons_windows/png/128x128/1_lightning_1.png",
+    "op": "copy",
+    "scale_to": 128,
+    "fps": 0,
+    "loop": false
+  },
+  {
+    "id": "icon.sword",
+    "category": "icons/skills",
+    "source": "spells and ability icons_windows/png/128x128/1_weapon_sword.png",
+    "op": "copy",
+    "scale_to": 128,
+    "fps": 0,
+    "loop": false
+  },
+  {
+    "id": "icon.equip_axe",
+    "category": "icons/equip",
+    "source": "gui pro_fantasy rpg_gamedevmarket/GUI Pro-FantasyRPG_2.0/PNG/Component/Icon_EquipIcons/NoShadow/128/equip_icon_axe_0.png",
+    "op": "copy",
+    "scale_to": 128,
+    "fps": 0,
+    "loop": false
+  },
+  {
+    "id": "icon.equip_hammer",
+    "category": "icons/equip",
+    "source": "gui pro_fantasy rpg_gamedevmarket/GUI Pro-FantasyRPG_2.0/PNG/Component/Icon_EquipIcons/NoShadow/128/equip_icon_hammer_0.png",
+    "op": "copy",
+    "scale_to": 128,
+    "fps": 0,
+    "loop": false
+  },
+  {
+    "id": "icon.equip_crystal",
+    "category": "icons/equip",
+    "source": "gui pro_fantasy rpg_gamedevmarket/GUI Pro-FantasyRPG_2.0/PNG/Component/Icon_EquipIcons/NoShadow/128/equip_icon_cyristal.png",
+    "op": "copy",
+    "scale_to": 128,
+    "fps": 0,
+    "loop": false
+  },
+  {
+    "id": "icon.equip_gem",
+    "category": "icons/equip",
+    "source": "gui pro_fantasy rpg_gamedevmarket/GUI Pro-FantasyRPG_2.0/PNG/Component/Icon_EquipIcons/NoShadow/128/equip_icon_gem_red.png",
+    "op": "copy",
+    "scale_to": 128,
+    "fps": 0,
+    "loop": false
+  },
+  {
+    "id": "icon.equip_shield",
+    "category": "icons/equip",
+    "source": "gui pro_fantasy rpg_gamedevmarket/GUI Pro-FantasyRPG_2.0/PNG/Component/Icon_EquipIcons/NoShadow/128/equip_icon_shield_wood.png",
+    "op": "copy",
+    "scale_to": 128,
+    "fps": 0,
+    "loop": false
+  },
+  {
+    "id": "icon.equip_ring",
+    "category": "icons/equip",
+    "source": "gui pro_fantasy rpg_gamedevmarket/GUI Pro-FantasyRPG_2.0/PNG/Component/Icon_EquipIcons/NoShadow/128/equip_icon_ring_gold.png",
+    "op": "copy",
+    "scale_to": 128,
+    "fps": 0,
+    "loop": false
+  },
+  {
+    "id": "icon.equip_stone",
+    "category": "icons/equip",
+    "source": "gui pro_fantasy rpg_gamedevmarket/GUI Pro-FantasyRPG_2.0/PNG/Component/Icon_EquipIcons/NoShadow/128/equip_icon_stone.png",
+    "op": "copy",
+    "scale_to": 128,
+    "fps": 0,
+    "loop": false
+  },
+  {
+    "id": "icon.equip_potion_red",
+    "category": "icons/equip",
+    "source": "gui pro_fantasy rpg_gamedevmarket/GUI Pro-FantasyRPG_2.0/PNG/Component/Icon_EquipIcons/NoShadow/128/equip_icon_potion_red_0.png",
+    "op": "copy",
+    "scale_to": 128,
+    "fps": 0,
+    "loop": false
+  },
+  {
+    "id": "icon.equip_potion_blue",
+    "category": "icons/equip",
+    "source": "gui pro_fantasy rpg_gamedevmarket/GUI Pro-FantasyRPG_2.0/PNG/Component/Icon_EquipIcons/NoShadow/128/equip_icon_potion_blue_0.png",
+    "op": "copy",
+    "scale_to": 128,
+    "fps": 0,
+    "loop": false
+  },
+  {
+    "id": "icon.rune_1",
+    "category": "icons/runes",
+    "source": "magic runes pixel art asset pack/Beowulf's_Magic_Runes/runes_size_xxx_128x128/spr_rune_xxx_1.png",
+    "op": "copy",
+    "scale_to": 128,
+    "fps": 0,
+    "loop": false
+  },
+  {
+    "id": "icon.stat_attack",
+    "category": "icons/stats",
+    "source": "2d minimal stat icons/128/Stat_Attack_01.png",
+    "op": "copy",
+    "scale_to": 128,
+    "fps": 0,
+    "loop": false
+  },
+  {
+    "id": "icon.stat_defense",
+    "category": "icons/stats",
+    "source": "2d minimal stat icons/128/Stat_Defense.png",
+    "op": "copy",
+    "scale_to": 128,
+    "fps": 0,
+    "loop": false
+  },
+  {
+    "id": "npc.vendor",
+    "category": "npcs",
+    "source": "pixel art rpg npc/Pixel Art Top-Down RPG NPC - AfGameAssets - V1/TentacleButcher_Idle.png",
+    "op": "strip_v",
+    "fps": 6,
+    "loop": true,
+    "scale_to": 128
+  },
+  {
+    "id": "npc.inn",
+    "category": "npcs",
+    "source": "pixel art rpg npc/Pixel Art Top-Down RPG NPC - AfGameAssets - V1/BarMan_Idle.png",
+    "op": "strip_v",
+    "fps": 6,
+    "loop": true,
+    "scale_to": 128
+  },
+  {
+    "id": "npc.trainer",
+    "category": "npcs",
+    "source": "pixel art rpg npc/Pixel Art Top-Down RPG NPC - AfGameAssets - V1/ShieldMan_Idle.png",
+    "op": "strip_v",
+    "fps": 6,
+    "loop": true,
+    "scale_to": 128
+  },
+  {
+    "id": "npc.librarian",
+    "category": "npcs",
+    "source": "pixel art rpg npc/Pixel Art Top-Down RPG NPC - AfGameAssets - V1/Librarian_Idle.png",
+    "op": "strip_v",
+    "fps": 6,
+    "loop": true,
+    "scale_to": 128
+  },
+  {
+    "id": "ui.frame",
+    "category": "ui",
+    "source": "gui pro_fantasy rpg_gamedevmarket/GUI Pro-FantasyRPG_2.0/PNG/Component/Frame/BasicFrame_Square_m.png",
+    "op": "copy_raw",
+    "required": false
+  },
+  {
+    "id": "ui.slot",
+    "category": "ui",
+    "source": "gui pro_fantasy rpg_gamedevmarket/GUI Pro-FantasyRPG_2.0/PNG/Component/Frame/SlotFrame_Square_02_Bg.png",
+    "op": "copy_raw",
+    "required": false
+  },
+  {
+    "id": "ui.popup",
+    "category": "ui",
+    "source": "gui pro_fantasy rpg_gamedevmarket/GUI Pro-FantasyRPG_2.0/PNG/Component/Popup/Popup_02_White_Bg.png",
+    "op": "copy_raw",
+    "required": false
+  },
+  {
+    "id": "ui.bar_bg",
+    "category": "ui",
+    "source": "gui pro_fantasy rpg_gamedevmarket/GUI Pro-FantasyRPG_2.0/PNG/Component/Slider/Slider_Batteary_Bg.png",
+    "op": "copy_raw",
+    "required": false
+  },
+  {
+    "id": "ui.bar_fill",
+    "category": "ui",
+    "source": "gui pro_fantasy rpg_gamedevmarket/GUI Pro-FantasyRPG_2.0/PNG/Component/Slider/Slider_Batteary_Fill.png",
+    "op": "copy_raw",
+    "required": false
+  },
+  {
+    "id": "ui.button",
+    "category": "ui",
+    "source": "gui pro_fantasy rpg_gamedevmarket/GUI Pro-FantasyRPG_2.0/PNG/Component/Button/Button_Rectangle_01_Convex_White_Bg.png",
+    "op": "copy_raw",
+    "required": false
+  },
+  {
+    "id": "sfx.sword_hit",
+    "source": "combat sounds bundle collection/The_Sound_Guild_Combat_Sounds_Bundle/WAV - 44100 Hz - 16 Bit/Sword_Combat_Sounds/Big_Hit_Target_01.wav",
+    "op": "audio_copy",
+    "required": false
+  },
+  {
+    "id": "sfx.sword_swing",
+    "source": "combat sounds bundle collection/The_Sound_Guild_Combat_Sounds_Bundle/WAV - 44100 Hz - 16 Bit/Sword_Combat_Sounds/Block_With_Sword_01.wav",
+    "op": "audio_copy",
+    "required": false
+  },
+  {
+    "id": "sfx.block",
+    "source": "combat sounds bundle collection/The_Sound_Guild_Combat_Sounds_Bundle/WAV - 44100 Hz - 16 Bit/Sword_Combat_Sounds/Block_Metal_Armour_01.wav",
+    "op": "audio_copy",
+    "required": false
+  },
+  {
+    "id": "sfx.magic",
+    "source": "combat sounds bundle collection/The_Sound_Guild_Combat_Sounds_Bundle/WAV - 44100 Hz - 16 Bit/Fantasy_Combat_Sounds_01/Arch_Magical_Shoot_01.wav",
+    "op": "audio_copy",
+    "required": false
+  },
+  {
+    "id": "sfx.click",
+    "source": "user interface sfx bundle/The_Sound_Guild_User_Interface_SFX_Bundle/WAV - 44100 Hz - 16 Bit/Clicks_Sounds/Click_Elegant_01.wav",
+    "op": "audio_copy",
+    "required": false
+  },
+  {
+    "id": "sfx.coins",
+    "source": "user interface sfx bundle/The_Sound_Guild_User_Interface_SFX_Bundle/WAV - 44100 Hz - 16 Bit/Coins_Sounds/Cool_Coins_Obtain_01.wav",
+    "op": "audio_copy",
+    "required": false
+  },
+  {
+    "id": "sfx.bag",
+    "source": "user interface sfx bundle/The_Sound_Guild_User_Interface_SFX_Bundle/WAV - 44100 Hz - 16 Bit/RPG_Inventory_Sounds/Bag_Interaction_Soft_01.wav",
+    "op": "audio_copy",
+    "required": false
+  },
+  {
+    "id": "sfx.shop",
+    "source": "user interface sfx bundle/The_Sound_Guild_User_Interface_SFX_Bundle/WAV - 44100 Hz - 16 Bit/RPG_Shop_Sounds/Box_01.wav",
+    "op": "audio_copy",
+    "required": false
+  },
+  {
+    "id": "sfx.monster",
+    "source": "monster sounds volume1/The_Sound_Guild_Monster_Sounds_Volume_01/WAV - 44100 Hz - 16 Bit/Aggressive_01.wav",
+    "op": "audio_copy",
+    "required": false
+  },
+  {
+    "id": "amb.dungeon",
+    "source": "ambience sounds pack/The_Sound_Guild_Ambience_Sounds/WAV - 44100 Hz - 16 Bit/Ambience_Dungeon_01_Loop.wav",
+    "op": "audio_copy",
+    "required": false
+  },
+  {
+    "id": "amb.town",
+    "source": "ambience sounds pack/The_Sound_Guild_Ambience_Sounds/WAV - 44100 Hz - 16 Bit/Ambience_Forest_Loop.wav",
+    "op": "audio_copy",
+    "required": false
+  }
+]

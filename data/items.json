@@ -1,0 +1,58 @@
+{
+  "gold": {"name": "Gold", "kind": "gold", "icon": "icon.skill_gold", "sell": 1},
+  "ghost_ectoplasm": {"name": "Ghost Ectoplasm", "kind": "material", "icon": "item.ghost_ectoplasm", "sell": 6},
+  "red_meat": {"name": "Red Meat", "kind": "material", "icon": "item.red_meat", "sell": 3},
+  "fur_tuft": {"name": "Fur Tuft", "kind": "material", "icon": "item.fur_tuft", "sell": 4},
+  "monster_bone": {"name": "Monster Bone", "kind": "material", "icon": "item.monster_bone", "sell": 5},
+  "monster_scale": {"name": "Monster Scale", "kind": "material", "icon": "item.monster_scale", "sell": 7},
+  "coal": {"name": "Coal", "kind": "material", "icon": "item.coal", "sell": 4},
+  "human_skull": {"name": "Human Skull", "kind": "material", "icon": "item.human_skull", "sell": 12},
+  "monster_core": {"name": "Monster Core", "kind": "material", "icon": "item.monster_core", "sell": 20},
+  "whetstone": {"name": "Whetstone", "kind": "material", "icon": "item.whetstone", "sell": 8},
+  "ruby": {"name": "Ruby", "kind": "material", "icon": "item.ruby", "sell": 18},
+  "health_potion": {"name": "Health Potion", "kind": "consumable", "icon": "item.health_potion", "sell": 10, "heal": 40},
+  "mana_potion": {"name": "Mana Potion", "kind": "consumable", "icon": "item.mana_potion", "sell": 10, "mana": 40},
+  "dragon_scale": {"name": "Dragon Scale", "kind": "material", "icon": "item.dragon_scale", "sell": 40},
+  "bear_paw": {"name": "Beast Paw", "kind": "material", "icon": "item.bear_paw", "sell": 5},
+  "rune_spark": {"name": "Spark Rune", "kind": "rune", "icon": "icon.rune_1", "sell": 15},
+  "bone_sword": {
+    "name": "Bone Sword",
+    "kind": "equipment",
+    "slot": "weapon",
+    "icon": "icon.equip_axe",
+    "ok_classes": ["fighter"],
+    "stats": {"power": 8},
+    "sell": 25,
+    "rarity": "common"
+  },
+  "ember_focus": {
+    "name": "Ember Focus",
+    "kind": "equipment",
+    "slot": "weapon",
+    "icon": "icon.equip_crystal",
+    "ok_classes": ["mage"],
+    "stats": {"power": 10},
+    "sell": 28,
+    "rarity": "common"
+  },
+  "holy_symbol": {
+    "name": "Holy Symbol",
+    "kind": "equipment",
+    "slot": "offhand",
+    "icon": "icon.equip_hammer",
+    "ok_classes": ["cleric"],
+    "stats": {"power": 6, "armor": 2},
+    "sell": 26,
+    "rarity": "common"
+  },
+  "scale_mail": {
+    "name": "Scale Mail",
+    "kind": "equipment",
+    "slot": "chest",
+    "icon": "icon.equip_shield",
+    "ok_classes": ["fighter", "mage", "cleric"],
+    "stats": {"armor": 10, "hp": 20},
+    "sell": 80,
+    "rarity": "rare"
+  }
+}

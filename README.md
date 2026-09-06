@@ -111,18 +111,23 @@ Exact bindings will live in data when the input module exists.
 4. Return to town: sell junk (`TentacleButcher` / `BarMan`), craft at the bench (materials + GUI Pro equip icons).
 5. Wear better gear; next act.
 
-## When code exists
+## Run
 
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate   # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 export GROK_RPG_ASSETS="/mnt/i/game assets/complete rpg creator bundle"
+export PYTHONPATH=src
 python tools/bake_assets.py
 python -m grok_rpg
 ```
 
-Those entry points are specified for implementers; they are not in the tree yet.
+Tests (no bundle, no window):
+
+```bash
+PYTHONPATH=src pytest -q
+```
 
 ## For implementers
 

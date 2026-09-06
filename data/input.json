@@ -1,0 +1,16 @@
+{
+  "move_up": ["w", "up"],
+  "move_down": ["s", "down"],
+  "move_left": ["a", "left"],
+  "move_right": ["d", "right"],
+  "inventory": ["i", "tab"],
+  "craft": ["c"],
+  "interact": ["e"],
+  "skill1": ["1"],
+  "skill2": ["2"],
+  "skill3": ["3"],
+  "skill4": ["4"],
+  "potion_hp": ["h"],
+  "debug": ["f3"],
+  "pause": ["escape"]
+}
