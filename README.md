@@ -4,7 +4,7 @@ A **128×128 pixel-art Diablo-style ARPG**: slay monsters, pick up loot, sell it
 
 This repository is the game project. Art and audio come from the **Complete RPG Creator Bundle** on disk. They are not stored in git.
 
-**Status:** design and agent docs only (`AGENTS.md`, this file). Game code has not been generated yet.
+**Status:** implementation in progress. Read [PLAN.md](PLAN.md) for phases, then [AGENTS.md](AGENTS.md) for asset and class rules.
 
 ## What you will play
 
