@@ -31,18 +31,49 @@ def fit_to_cell(im: Image.Image, size: int = CELL) -> Image.Image:
     return canvas
 
 
-def _slice_strip_v(im: Image.Image, frame: int) -> list[Image.Image]:
+def _slice_strip_v(im: Image.Image, frame_w: int, frame_h: int | None = None) -> list[Image.Image]:
     w, h = im.size
-    if frame <= 0:
-        frame = w
+    if frame_w <= 0:
+        frame_w = w
+    if frame_h is None or frame_h <= 0:
+        frame_h = frame_w
     frames = []
     y = 0
-    while y + frame <= h:
-        frames.append(im.crop((0, y, min(frame, w), y + frame)))
-        y += frame
+    while y < h:
+        remaining = h - y
+        if remaining < frame_h * 0.5:
+            break
+        fh = min(frame_h, remaining)
+        frames.append(im.crop((0, y, min(frame_w, w), y + fh)))
+        y += frame_h
     if not frames:
         frames.append(im)
     return frames
+
+
+def _frame_is_half(fr: Image.Image) -> bool:
+    fr = fr.convert("RGBA")
+    w, h = fr.size
+    pix = list(fr.getdata())
+    rows = [i // w for i, p in enumerate(pix) if p[3] > 20]
+    if not rows:
+        return True
+    top, bot = min(rows), max(rows)
+    span = bot - top + 1
+    if span / h > 0.65:
+        return False
+    return top >= h * 0.35 or bot <= h * 0.65
+
+
+def detect_frame_h(im: Image.Image, frame_w: int) -> int:
+    """If square slices alternate top/bottom halves, the real frame is 2× width."""
+    square = _slice_strip_v(im, frame_w, frame_w)
+    if len(square) < 4:
+        return frame_w
+    halves = sum(1 for fr in square if _frame_is_half(fr))
+    if halves >= max(3, int(len(square) * 0.4)):
+        return frame_w * 2
+    return frame_w
 
 
 def _slice_strip_h(im: Image.Image, frame: int) -> list[Image.Image]:
@@ -108,8 +139,11 @@ def bake_job(
     if op == "copy":
         pieces = [im]
     elif op == "strip_v":
-        frame = int(job.get("frame") or im.size[0])
-        pieces = _slice_strip_v(im, frame)
+        frame_w = int(job.get("frame") or im.size[0])
+        frame_h = job.get("frame_h")
+        if frame_h is None:
+            frame_h = detect_frame_h(im, frame_w)
+        pieces = _slice_strip_v(im, frame_w, int(frame_h))
     elif op == "strip_h":
         frame = int(job.get("frame") or im.size[1])
         pieces = _slice_strip_h(im, frame)
@@ -140,6 +174,7 @@ def bake_job(
         "kind": "sprite",
         "fps": int(job.get("fps", 8)),
         "loop": bool(job.get("loop", True)),
+        "pingpong": bool(job.get("pingpong", False)),
     }
 
 

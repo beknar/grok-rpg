@@ -4,7 +4,7 @@ from pathlib import Path
 
 from PIL import Image
 
-from grok_rpg.baker import bake_all, bake_job, fit_to_cell
+from grok_rpg.baker import bake_all, bake_job, detect_frame_h, fit_to_cell
 
 
 def _png(path: Path, w: int, h: int, color=(255, 0, 0, 255)) -> None:
@@ -60,6 +60,35 @@ def test_strip_and_copy(tmp_path: Path) -> None:
     frame0 = Image.open(dest / idle["frames"][0])
     assert frame0.size == (128, 128)
     assert frame0.getpixel((10, 10))[:3] == (255, 0, 0)
+
+
+def test_detects_tall_frames_not_square_halves() -> None:
+    im = Image.new("RGBA", (32, 256), (0, 0, 0, 0))
+    for i in range(4):
+        y0 = i * 64
+        for y in range(y0 + 16, y0 + 32):
+            for x in range(8, 24):
+                im.putpixel((x, y), (255, 255, 255, 255))
+        for y in range(y0 + 32, y0 + 48):
+            for x in range(8, 24):
+                im.putpixel((x, y), (255, 255, 255, 255))
+    assert detect_frame_h(im, 32) == 64
+
+
+def test_strip_frame_h(tmp_path: Path) -> None:
+    bundle = tmp_path / "bundle"
+    dest = tmp_path / "baked"
+    bundle.mkdir()
+    strip = Image.new("RGBA", (32, 128), (0, 0, 0, 0))
+    for i, c in enumerate([(255, 0, 0, 255), (0, 255, 0, 255)]):
+        for y in range(i * 64, i * 64 + 64):
+            for x in range(32):
+                strip.putpixel((x, y), c)
+    (bundle / "tall.png").parent.mkdir(parents=True, exist_ok=True)
+    strip.save(bundle / "tall.png")
+    jobs = [{"id": "hero.idle", "category": "c", "source": "tall.png", "op": "strip_v", "frame": 32, "frame_h": 64}]
+    index = bake_all(jobs, bundle=bundle, dest_root=dest, write_manifest_copy=False)
+    assert len(index["by_id"]["hero.idle"]["frames"]) == 2
 
 
 def test_missing_bundle_job(tmp_path: Path) -> None:

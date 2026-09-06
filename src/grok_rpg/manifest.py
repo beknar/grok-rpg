@@ -45,7 +45,17 @@ MON_SFX = (
 )
 
 
-def _strip(job_id: str, source: str, *, category: str, frame: int | None = None, fps: int = 8, loop: bool = True) -> dict[str, Any]:
+def _strip(
+    job_id: str,
+    source: str,
+    *,
+    category: str,
+    frame: int | None = None,
+    frame_h: int | None = None,
+    fps: int = 8,
+    loop: bool = True,
+    pingpong: bool = False,
+) -> dict[str, Any]:
     job: dict[str, Any] = {
         "id": job_id,
         "category": category,
@@ -53,10 +63,13 @@ def _strip(job_id: str, source: str, *, category: str, frame: int | None = None,
         "op": "strip_v",
         "fps": fps,
         "loop": loop,
+        "pingpong": pingpong,
         "scale_to": 128,
     }
     if frame is not None:
         job["frame"] = frame
+    if frame_h is not None:
+        job["frame_h"] = frame_h
     return job
 
 
@@ -90,7 +103,16 @@ def default_jobs() -> list[dict[str, Any]]:
         "hit": "Viking/VikingAttacked.png",
     }
     for anim, rel in fighter.items():
-        jobs.append(_strip(f"char.fighter.{anim}", f"{CHAR}/{rel}", category="characters/fighter", fps=10 if "walk" in anim or anim == "idle" else 14, loop=anim not in ("dead", "attack")))
+        idle = anim == "idle"
+        walk = "walk" in anim
+        jobs.append(_strip(
+            f"char.fighter.{anim}",
+            f"{CHAR}/{rel}",
+            category="characters/fighter",
+            fps=6 if idle else 8 if walk else 12,
+            loop=anim not in ("dead", "attack"),
+            pingpong=idle or walk,
+        ))
 
     mage = {
         "idle": "BloodMage/BloodMage_Idle.png",
@@ -103,7 +125,16 @@ def default_jobs() -> list[dict[str, Any]]:
         "charge": "BloodMage/Effect_BloodBubble.png",
     }
     for anim, rel in mage.items():
-        jobs.append(_strip(f"char.mage.{anim}", f"{CHAR}/{rel}", category="characters/mage", fps=10, loop=anim not in ("dead", "attack")))
+        idle = anim == "idle"
+        walk = "walk" in anim
+        jobs.append(_strip(
+            f"char.mage.{anim}",
+            f"{CHAR}/{rel}",
+            category="characters/mage",
+            fps=6 if idle else 8 if walk else 12,
+            loop=anim not in ("dead", "attack", "charge"),
+            pingpong=idle or walk,
+        ))
 
     cleric = {
         "idle": ("Druid/Druid_Idle.png", 32),
@@ -115,7 +146,18 @@ def default_jobs() -> list[dict[str, Any]]:
         "dead": ("Druid/Druid_Dead.png", 64),
     }
     for anim, (rel, frame) in cleric.items():
-        jobs.append(_strip(f"char.cleric.{anim}", f"{CHAR}/{rel}", category="characters/cleric", frame=frame, fps=10, loop=anim not in ("dead", "attack")))
+        idle = anim == "idle"
+        walk = "walk" in anim
+        jobs.append(_strip(
+            f"char.cleric.{anim}",
+            f"{CHAR}/{rel}",
+            category="characters/cleric",
+            frame=frame,
+            frame_h=64 if frame == 32 else None,
+            fps=6 if idle else 8 if walk else 12,
+            loop=anim not in ("dead", "attack"),
+            pingpong=idle or walk,
+        ))
     jobs.append({
         "id": "char.cleric.heal_fx",
         "category": "characters/cleric",
@@ -169,8 +211,9 @@ def default_jobs() -> list[dict[str, Any]]:
                 f"mon.{mid}.{anim}",
                 f"{ENEMY}/{rel}",
                 category=f"monsters/{mid}",
-                fps=10,
+                fps=6 if anim == "idle" else 8 if anim == "walk" else 12,
                 loop=anim not in ("dead", "attack", "hit"),
+                pingpong=anim in ("idle", "walk"),
             ))
 
     for n in (1, 2, 3, 4, 5, 6, 7, 8):

@@ -53,12 +53,18 @@ class Animator:
         self.sprite_id = ""
         self.t = 0.0
         self.frame = 0
+        self.dir = 1
 
     def play(self, sprite_id: str, restart: bool = False) -> None:
         if sprite_id != self.sprite_id or restart:
             self.sprite_id = sprite_id
             self.t = 0.0
             self.frame = 0
+            self.dir = 1
+
+    def pingpong(self, bank: SpriteBank) -> bool:
+        meta = bank.index.get(self.sprite_id) or {}
+        return bool(meta.get("pingpong")) and bank.loops(self.sprite_id)
 
     def update(self, dt: float, bank: SpriteBank) -> pygame.Surface | None:
         frames = bank.frames(self.sprite_id)
@@ -67,9 +73,22 @@ class Animator:
         fps = max(1, bank.fps(self.sprite_id))
         self.t += dt
         step = 1.0 / fps
+        n = len(frames)
         while self.t >= step:
             self.t -= step
-            self.frame += 1
-            if self.frame >= len(frames):
-                self.frame = 0 if bank.loops(self.sprite_id) else len(frames) - 1
-        return frames[self.frame]
+            if n == 1:
+                self.frame = 0
+                continue
+            if self.pingpong(bank):
+                self.frame += self.dir
+                if self.frame >= n:
+                    self.dir = -1
+                    self.frame = max(0, n - 2)
+                elif self.frame < 0:
+                    self.dir = 1
+                    self.frame = min(1, n - 1)
+            else:
+                self.frame += 1
+                if self.frame >= n:
+                    self.frame = 0 if bank.loops(self.sprite_id) else n - 1
+        return frames[min(self.frame, n - 1)]

@@ -115,6 +115,7 @@ class Actor:
         self.resource_max = 0.0
         self.resource_name = "mana"
         self.dead = False
+        self.moving = False
 
 
 class Player(Actor):
@@ -425,6 +426,7 @@ class Game:
     def handle_play(self, events: list[pygame.event.Event]) -> None:
         p = self.player
         assert p and self.world
+        p.moving = False
         keys = pygame.key.get_pressed()
         binds = self.bindings
         for ev in events:
@@ -519,6 +521,7 @@ class Game:
             nx = p.x + nrm[0] * speed * self.dt
             ny = p.y + nrm[1] * speed * self.dt
             p.x, p.y = self.world.clamp_move(p.x, p.y, nx, ny, p.radius)
+            p.moving = True
         elif pygame.mouse.get_pressed()[0] and p.click_target:
             mx, my = self.world_mouse()
             self.cast(p.ability_ids[0])
@@ -529,6 +532,7 @@ class Game:
                 nx = p.x + nrm[0] * p.speed * self.dt
                 ny = p.y + nrm[1] * p.speed * self.dt
                 p.x, p.y = self.world.clamp_move(p.x, p.y, nx, ny, p.radius)
+                p.moving = True
 
     def try_interact(self) -> None:
         p = self.player
@@ -589,12 +593,14 @@ class Game:
             if self.time < m.slow_until:
                 speed *= 1.0 - m.slow
             d = dist(m.x, m.y, p.x, p.y)
+            m.moving = False
             if d < m.aggro and d > m.attack_range * 0.7:
                 nrm = norm(p.x - m.x, p.y - m.y)
                 nx = m.x + nrm[0] * speed * self.dt
                 ny = m.y + nrm[1] * speed * self.dt
                 m.x, m.y = w.clamp_move(m.x, m.y, nx, ny, m.radius)
                 m.facing = facing_from(*nrm)
+                m.moving = True
             if d <= m.attack_range and self.time >= m.next_attack:
                 m.next_attack = self.time + m.attack_cd
                 m.attack_timer = 0.35
@@ -759,11 +765,13 @@ class Game:
         return None
 
     def blit_world(self, sprite: pygame.Surface | None, x: float, y: float, fallback: tuple[int, int, int]) -> None:
-        sx, sy = int(x - self.cam_x - TILE / 2), int(y - self.cam_y - TILE / 2)
         if sprite:
+            sx = int(x - self.cam_x - sprite.get_width() / 2)
+            sy = int(y - self.cam_y - sprite.get_height() + 24)
             self.logical.blit(sprite, (sx, sy))
         else:
-            pygame.draw.rect(self.logical, fallback, (sx + 40, sy + 40, 48, 48))
+            sx, sy = int(x - self.cam_x - 24), int(y - self.cam_y - 48)
+            pygame.draw.rect(self.logical, fallback, (sx, sy, 48, 48))
 
     def draw_play(self) -> None:
         p = self.player
@@ -808,8 +816,7 @@ class Game:
             label = self.font.render(f"{name} x{drop.qty}", True, (255, 230, 160))
             self.logical.blit(label, (drop.x - self.cam_x - label.get_width() / 2, drop.y - self.cam_y + 20))
 
-        moving_p = pygame.key.get_pressed()[pygame.K_w] or pygame.key.get_pressed()[pygame.K_a] or pygame.key.get_pressed()[pygame.K_s] or pygame.key.get_pressed()[pygame.K_d] or pygame.mouse.get_pressed()[0]
-        sid = self.sprite_for(p, bool(moving_p) and self.ui == "none")
+        sid = self.sprite_for(p, p.moving and self.ui == "none")
         if sid:
             p.anim.play(sid)
         frame = p.anim.update(self.dt, self.bank)
@@ -818,8 +825,7 @@ class Game:
         for m in self.monsters:
             if m.hp <= 0:
                 continue
-            moving = dist(m.x, m.y, p.x, p.y) < m.aggro
-            sid = self.sprite_for(m, moving)
+            sid = self.sprite_for(m, m.moving)
             if sid:
                 m.anim.play(sid)
             fr = m.anim.update(self.dt, self.bank)
